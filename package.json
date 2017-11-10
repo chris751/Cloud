@@ -1,0 +1,21 @@
+{
+  "name": "cloud",
+  "version": "1.0.0",
+  "description": "IoT cloud",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "google-auth-library": "^0.11.0",
+    "googleapis": "^22.2.0",
+    "hbs": "^4.0.1",
+    "request": "^2.83.0"
+  }
+}

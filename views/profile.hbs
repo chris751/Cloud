@@ -1,0 +1,104 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Profile</title>
+    <script src="https://use.fontawesome.com/f1c470c43f.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/f1c470c43f.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+        crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+</head>
+
+<style>
+    .container {
+        margin: 10px;
+    }
+</style>
+
+
+
+<body>
+    <div class="container">
+
+
+        <h1>Welcome {{name}}</h1>
+        <hr>
+        <div class="row">
+
+            <div class="col-xs-6" style="border-right:1px solid #989898;height:500px">
+                <h1>Events</h1>
+
+                <br>
+                <h3>Calendar</h3>
+                <i>Type the name of the calendar event that you wish to add an action</i>
+                <form id="registerform">
+                    <div id="ifYes" style="display:none">
+                        <input type="text" name="profile_id" value="{{id}}">
+                        <input type="text" name="profile_name" value="{{name}}">
+                    </div>
+                    <input type="text" name="cal_event" placeholder="work">
+                    <br>
+                    <br>
+                    <input type="submit" value="Save">
+                </form>
+
+
+            </div>
+
+            <div class="col-xs-6" style="padding-left: 10px">
+
+                <h1>Action</h1>
+
+                <br>
+                <h3>Calendar</h3>
+                <i>I want to </i>
+                <select name="cal_action" form="registerform">
+
+                    <option value="dim">Dim light</option>
+                    <option value="increase">Increase light</option>
+                    <option value="off">Turn off</option>
+
+                    <i>during events with this name </i>
+
+                </select>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<script>
+    $(function () {
+
+        $("#registerform").on("submit", function (e) {
+            var data = $(this).serialize();
+            e.preventDefault();
+            $.ajax({
+                url: 'http://localhost:8080/settings',
+                type: 'POST',
+                data: data,
+                complete: function () {
+                    //called when complete
+                    console.log('process complete');
+                },
+                success: function (data) {
+                    console.log(data);
+                    var myJSON = JSON.stringify(data);
+                    alert(myJSON);
+                    console.log('process sucess');
+                },
+
+                error: function () {
+                    console.log('process error');
+                },
+            });
+        });
+    });
+</script>
+
+</html>
