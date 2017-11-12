@@ -66,3 +66,14 @@ exports.getClient = function (callback) {
   callback(oauth2Client);
 }
 
+exports.getToken = function(oauth2Client, code, callback){
+  oauth2Client.getToken(code, function (err, tokens) {
+    // Now tokens contains an access_token and an optional refresh_token. Save them.
+    if (!err) {
+      callback(null, tokens);
+    } else {
+      callback(err, null);
+    }
+  });
+}    
+

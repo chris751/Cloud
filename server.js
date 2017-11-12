@@ -32,7 +32,9 @@ app.use(session({
   secret: 'keyboard cat',
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: true }
+  cookie: {
+    secure: true
+  }
 }))
 
 var scopes = [
@@ -56,21 +58,13 @@ app.get('/login', function (req, res) {
 
 app.get('/auth/google/callback', function (req, res) {
   var code = req.query['code'];
-  //console.log(code);
-
-  googleHelpers.getClient(function (client) {
-    var oauth2Client = client;
-
-    oauth2Client.getToken(code, function (err, tokens) {
-      // Now tokens contains an access_token and an optional refresh_token. Save them.
+  googleHelpers.getClient(function (oauth2Client) {
+    googleHelpers.getToken(oauth2Client, code, function (err, tokens) {
       if (!err) {
-        //console.log(tokens);
         oauth2Client.setCredentials(tokens);
         googleHelpers.listCalendarEvents(oauth2Client, google);
         googleHelpers.gAuth(oauth2Client, function (userInfo) {
           if (userInfo !== 'error') {
-            console.log(userInfo.id);
-            console.log(userInfo.name);
             req.session.user_id = userInfo.id;
             req.session.name = userInfo.name;
             res.redirect('/profile'); // when authenticated send to profile site
@@ -79,17 +73,17 @@ app.get('/auth/google/callback', function (req, res) {
       } else {
         res.send('error');
       }
-    });
+    })
   });
 });
 
 app.get('/profile', function (req, res) {
-  if (req.session.user_id) {
+  if (req.session.user_id) { // check if id is present in cookie 
     res.render('profile.hbs', {
       name: req.session.name,
       id: req.session.user_id
     });
-  }else {
+  } else { // user not authenticated
     res.redirect('/');
   }
 });
@@ -100,7 +94,6 @@ app.post('/settings', function (request, res) {
     res.send('saved!');
   });
 });
-
 
 app.listen(app.get('port'), function () {
   console.log('Node app is running on port', app.get('port'));
