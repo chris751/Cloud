@@ -3,7 +3,6 @@ var cors = require('cors')
 var bodyParser = require('body-parser');
 var request = require('request');
 var google = require('googleapis');
-var GoogleAuth = require('google-auth-library');
 var exphbs = require('express-handlebars');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
@@ -12,13 +11,8 @@ var handlebars = require('./helpers/handlebars.js')(exphbs);
 var googleHelpers = require('./helpers/googleHelpers');
 var settingsHelper = require('./settings/settingsWriter');
 
-
 var app = express();
 app.use(cors());
-
-
-
-var url = require('url');
 
 app.engine('hbs', handlebars.engine);
 
@@ -41,26 +35,17 @@ app.use(session({
   cookie: { secure: true }
 }))
 
-var TOKEN_PATH = './users/tokens.json';
-var ENVIROMENT_URL = 'https://f1a545e0.ngrok.io';
-var CALLBACK_URL = `${ENVIROMENT_URL}/auth/google/callback`;
-
-var OAuth2 = google.auth.OAuth2;
-
-// generate a url that asks permissions for Google+ and Google Calendar scopes
 var scopes = [
   'https://www.googleapis.com/auth/plus.me',
   'https://www.googleapis.com/auth/calendar'
 ];
-
 
 app.get('/', function (req, res) {
   res.render('home.hbs');
 });
 
 app.get('/login', function (req, res) {
-  getClient(function (oauth2Client) {
-
+  googleHelpers.getClient(function (oauth2Client) {
     var url = oauth2Client.generateAuthUrl({
       access_type: 'offline',
       scope: scopes,
@@ -70,16 +55,11 @@ app.get('/login', function (req, res) {
 });
 
 app.get('/auth/google/callback', function (req, res) {
-
-
   var code = req.query['code'];
   //console.log(code);
 
-
-  getClient(function (client) {
+  googleHelpers.getClient(function (client) {
     var oauth2Client = client;
-
-
 
     oauth2Client.getToken(code, function (err, tokens) {
       // Now tokens contains an access_token and an optional refresh_token. Save them.
@@ -87,7 +67,7 @@ app.get('/auth/google/callback', function (req, res) {
         //console.log(tokens);
         oauth2Client.setCredentials(tokens);
         googleHelpers.listCalendarEvents(oauth2Client, google);
-        gAuth(oauth2Client, function (userInfo) {
+        googleHelpers.gAuth(oauth2Client, function (userInfo) {
           if (userInfo !== 'error') {
             console.log(userInfo.id);
             console.log(userInfo.name);
@@ -103,36 +83,7 @@ app.get('/auth/google/callback', function (req, res) {
   });
 });
 
-
-var gAuth = function (oauth2Client, callback) {
-  google.oauth2("v2").userinfo.v2.me.get({
-    auth: oauth2Client
-  }, (e, profile) => {
-    if (!e) {
-      console.log(profile.id);
-      callback(profile);
-    } else {
-      callback('error');
-    }
-  });
-}
-
-
-// something
-var getClient = function (callback) {
-  var oauth2Client = new OAuth2(
-    '260827620000-n22fb3grjj24e46jr6ul88tnngfh10bd.apps.googleusercontent.com',
-    '-0SPco82-qUcX42eMOJpGqnw',
-    CALLBACK_URL
-  );
-  console.log(ENVIROMENT_URL);
-  console.log(CALLBACK_URL);
-  callback(oauth2Client);
-}
-
 app.get('/profile', function (req, res) {
-  console.log(req.session.user_id);
-  console.log(req.session.name);
   if (req.session.user_id) {
     res.render('profile.hbs', {
       name: req.session.name,
