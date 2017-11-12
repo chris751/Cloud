@@ -117,6 +117,8 @@ var gAuth = function (oauth2Client, callback) {
   });
 }
 
+
+// something
 var getClient = function (callback) {
   var oauth2Client = new OAuth2(
     '260827620000-n22fb3grjj24e46jr6ul88tnngfh10bd.apps.googleusercontent.com',
