@@ -74,12 +74,13 @@
 
 <script>
     $(function () {
+        var env_url = 'https://f1a545e0.ngrok.io';
 
         $("#registerform").on("submit", function (e) {
             var data = $(this).serialize();
             e.preventDefault();
             $.ajax({
-                url: 'https://custom-iot-lighting-system.herokuapp.com/settings',
+                url: env_url + '/settings',
                 type: 'POST',
                 data: data,
                 complete: function () {
