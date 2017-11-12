@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Profile</title>
-    <script src="https://use.fontawesome.com/f1c470c43f.js"></script>
-    <link rel="stylesheet" href="https://use.fontawesome.com/f1c470c43f.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+    <script src="//use.fontawesome.com/f1c470c43f.js"></script>
+    <link rel="stylesheet" href="//use.fontawesome.com/f1c470c43f.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
         crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
-    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <link href="//fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+    <script src="//code.jquery.com/jquery-1.9.1.js"></script>
 </head>
 
 <style>
@@ -79,7 +79,7 @@
             var data = $(this).serialize();
             e.preventDefault();
             $.ajax({
-                url: 'http://localhost:8080/settings',
+                url: 'https://custom-iot-lighting-system.herokuapp.com/settings',
                 type: 'POST',
                 data: data,
                 complete: function () {
