@@ -37,6 +37,8 @@ app.use(session({
   }
 }))
 
+
+
 var scopes = [
   'https://www.googleapis.com/auth/plus.me',
   'https://www.googleapis.com/auth/calendar'

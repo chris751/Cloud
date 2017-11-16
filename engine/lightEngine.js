@@ -11,7 +11,6 @@ var checkForChanges = (settings) => {
     for (i = settings.length - 1; i >= 0; --i) {
         if (settings[i].mac_address) {
             communication.sendMacToPi(settings[i].mac_address);
-            console.log('sending ' + settings[i].mac_address);
         }
     }
 }

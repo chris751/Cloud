@@ -1,6 +1,5 @@
 const request = require('request');
 
-
 var weather_API = 'http://api.openweathermap.org/data/2.5/weather?q=Aarhus,%20DK&appid=fd525910006e703a7afaf8b6852bf461&units=metric';
 
 request(weather_API, function (error, response, body) {
