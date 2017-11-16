@@ -78,11 +78,19 @@ app.get('/auth/google/callback', function (req, res) {
 });
 
 app.get('/profile', function (req, res) {
+
+  // TODO load settings into cookie 
+
   if (req.session.user_id) { // check if id is present in cookie 
-    res.render('profile.hbs', {
-      name: req.session.name,
-      id: req.session.user_id
+    settingsHelper.fetchSpecificSetting(req.session.user_id, function(settingInfo){
+      console.log(settingInfo);
+      res.render('profile.hbs', {
+        name: req.session.name,
+        id: req.session.user_id,
+        settings: settingInfo
+      });
     });
+    
   } else { // user not authenticated
     res.redirect('/');
   }

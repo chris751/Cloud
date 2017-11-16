@@ -6,9 +6,15 @@
     "cal_action": "dim"
   },
   {
+    "profile_id": "111332992239282568741",
+    "profile_name": "Niklas Sørensen",
+    "cal_event": "Et eller andet ",
+    "cal_action": "increase"
+  },
+  {
     "profile_id": "117092538965115122466",
     "profile_name": "Christian Maigaard",
-    "cal_event": "sddsdsasddsaasd",
-    "cal_action": "dim"
+    "event_name": "arbejde",
+    "cal_action": "Increase_light"
   }
 ]

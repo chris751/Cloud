@@ -29,77 +29,87 @@
         <hr>
         <div class="row">
 
-            <div class="col-xs-6" style="border-right:1px solid #989898;height:500px">
+            <div class="col-6" style="border-right:1px solid #989898;height:500px">
                 <h1>Events</h1>
 
                 <br>
                 <h3>Calendar</h3>
-                <i>Type the name of the calendar event that you wish to add an action</i>
+
                 <form id="registerform">
+
                     <div id="ifYes" style="display:none">
                         <input type="text" name="profile_id" value="{{id}}">
                         <input type="text" name="profile_name" value="{{name}}">
                     </div>
-                    <input type="text" name="cal_event" placeholder="work">
+
+
+                    <div class="form-group">
+                        <input type="text" name="event_name" class="form-control" aria-describedby="emailHelp" placeholder="Event name" value="{{settings.event_name}}">
+                        <small id="emailHelp" class="form-text text-muted">Type the name of the calendar event that you wish to add an action.</small>
+                    </div>
+                    <hr>
                     <br>
                     <br>
-                    <input type="submit" value="Save">
+                    <button type="submit" class="btn btn-primary">Save</button>
                 </form>
 
 
             </div>
 
-            <div class="col-xs-6" style="padding-left: 10px">
+            <div class="col-6" style="padding-left: 10px">
+
 
                 <h1>Action</h1>
 
                 <br>
                 <h3>Calendar</h3>
-                <i>I want to </i>
-                <select name="cal_action" form="registerform">
+                <select class="custom-select" name="cal_action" form="registerform">
+                    <option value="{{settings.cal_action}}">{{settings.cal_action}}</option>
+                    <option value="Dim_light">Dim_light</option>
+                    <option value="Increase_light">Increase_light</option>
+                    <option value="Turn_off">Turn_off</option>
 
-                    <option value="dim">Dim light</option>
-                    <option value="increase">Increase light</option>
-                    <option value="off">Turn off</option>
 
-                    <i>during events with this name </i>
 
                 </select>
-
+                <small id="emailHelp" class="form-text text-muted">Type the name of the calendar event that you wish to add an action.</small>
+                <hr>
             </div>
         </div>
     </div>
 
-</body>
+    <script>
+        $(function () {
+            var env_url = 'https://dd6da80a.ngrok.io';
+            $("#registerform").on("submit", function (e) {
+                var data = $(this).serialize();
+                e.preventDefault();
+                $.ajax({
+                    url: env_url + '/settings',
+                    type: 'POST',
+                    data: data,
+                    complete: function () {
+                        //called when complete
+                        console.log('process complete');
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        var myJSON = JSON.stringify(data);
+                        alert(myJSON);
+                        console.log('process sucess');
+                    },
 
-<script>
-    $(function () {
-        var env_url = 'https://dd6da80a.ngrok.io';
-
-        $("#registerform").on("submit", function (e) {
-            var data = $(this).serialize();
-            e.preventDefault();
-            $.ajax({
-                url: env_url + '/settings',
-                type: 'POST',
-                data: data,
-                complete: function () {
-                    //called when complete
-                    console.log('process complete');
-                },
-                success: function (data) {
-                    console.log(data);
-                    var myJSON = JSON.stringify(data);
-                    alert(myJSON);
-                    console.log('process sucess');
-                },
-
-                error: function () {
-                    console.log('process error');
-                },
+                    error: function () {
+                        console.log('process error');
+                    },
+                });
             });
         });
-    });
-</script>
+    </script>
+
+</body>
+
+
+
 
 </html>
