@@ -19,30 +19,29 @@
     }
 </style>
 
-
-
 <body>
     <div class="container">
-
-
         <h1>Welcome {{name}}</h1>
         <hr>
+
+        <h3>Bluetooth</h3>
+           <div id="ifYes" style="display:none">
+                        <input type="text"  name="profile_id" value="{{id}}">
+                        <input type="text" form="registerform" name="profile_name" value="{{name}}">
+                    </div>
+
+        <input type="text" class="form-control" form="registerform" name="mac_address" value="{{settings.mac_address}}">
+        <br>
         <div class="row">
 
+
             <div class="col-6" style="border-right:1px solid #989898;height:500px">
+
                 <h1>Events</h1>
 
                 <br>
                 <h3>Calendar</h3>
-
                 <form id="registerform">
-
-                    <div id="ifYes" style="display:none">
-                        <input type="text" name="profile_id" value="{{id}}">
-                        <input type="text" name="profile_name" value="{{name}}">
-                    </div>
-
-
                     <div class="form-group">
                         <input type="text" name="event_name" class="form-control" aria-describedby="emailHelp" placeholder="Event name" value="{{settings.event_name}}">
                         <small id="emailHelp" class="form-text text-muted">Type the name of the calendar event that you wish to add an action.</small>
@@ -52,15 +51,11 @@
                     <br>
                     <button type="submit" class="btn btn-primary">Save</button>
                 </form>
-
-
             </div>
 
             <div class="col-6" style="padding-left: 10px">
 
-
                 <h1>Action</h1>
-
                 <br>
                 <h3>Calendar</h3>
                 <select class="custom-select" name="cal_action" form="registerform">
@@ -68,11 +63,8 @@
                     <option value="Dim_light">Dim_light</option>
                     <option value="Increase_light">Increase_light</option>
                     <option value="Turn_off">Turn_off</option>
-
-
-
                 </select>
-                <small id="emailHelp" class="form-text text-muted">Type the name of the calendar event that you wish to add an action.</small>
+                <small id="emailHelp" class="form-text text-muted">Choose the action for the event</small>
                 <hr>
             </div>
         </div>
@@ -98,7 +90,6 @@
                         alert(myJSON);
                         console.log('process sucess');
                     },
-
                     error: function () {
                         console.log('process error');
                     },
@@ -108,8 +99,5 @@
     </script>
 
 </body>
-
-
-
 
 </html>

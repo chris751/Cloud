@@ -1,6 +1,8 @@
 var fs = require('fs');
 var _ = require('lodash');
 
+var lightEngine = require('./../engine/lightEngine');
+
 var fetchNotes = () => {
   try {
     var notesString = fs.readFileSync('./settings/userSettings.json');
@@ -21,7 +23,6 @@ var fetchSpecificSetting = (id, callback) => {
   }
 }
 
-
 var getRequestedSetting = (setting, callback) => {
   var loadedSettings = fetchNotes();
   console.log('called with' + setting);
@@ -39,6 +40,7 @@ var getRequestedSetting = (setting, callback) => {
 var saveNotes = (notes) => {
   fs.writeFileSync('./settings/userSettings.json', JSON.stringify(notes, null, 2));
   console.log(notes);
+  lightEngine.start(notes);
 };
 
 var addNote = function (body, callback) {

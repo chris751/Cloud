@@ -14,7 +14,14 @@
   {
     "profile_id": "117092538965115122466",
     "profile_name": "Christian Maigaard",
-    "event_name": "arbejde",
-    "cal_action": "Increase_light"
+    "mac_address": "2C:33:61:B1:CF:48",
+    "event_name": "sup dogsss",
+    "cal_action": "Turn_off"
+  },
+  {
+    "profile_name": "Christian Maigaard",
+    "mac_address": "2C:33:61:B1:CF:48",
+    "event_name": "sup dogsss",
+    "cal_action": "Turn_off"
   }
 ]
