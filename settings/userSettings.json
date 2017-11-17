@@ -1,27 +1,24 @@
 [
   {
-    "profile_id": "104057105667853080193",
-    "profile_name": "",
-    "cal_event": "from pc",
-    "cal_action": "dim"
-  },
-  {
     "profile_id": "111332992239282568741",
     "profile_name": "Niklas Sørensen",
     "cal_event": "Et eller andet ",
     "cal_action": "increase"
   },
   {
-    "profile_id": "117092538965115122466",
-    "profile_name": "Christian Maigaard",
-    "mac_address": "2C:33:61:B1:CF:48",
-    "event_name": "sup dogsss",
-    "cal_action": "Turn_off"
+    "profile_id": "104057105667853080193",
+    "profile_name": "",
+    "mac_address": "f22604144c66",
+    "event_name": "draagiam",
+    "cal_action": "Increase_light",
+    "is_home": true
   },
   {
+    "profile_id": "117092538965115122466",
     "profile_name": "Christian Maigaard",
-    "mac_address": "2C:33:61:B1:CF:48",
-    "event_name": "sup dogsss",
+    "mac_address": "fdb2b61222fe",
+    "is_home": "not set",
+    "event_name": "arbejde",
     "cal_action": "Turn_off"
   }
 ]

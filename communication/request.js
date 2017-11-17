@@ -1,9 +1,12 @@
 const request = require('request');
 
+
+var PI_LOCAL_IP = '192.168.0.106:8484';
+
 module.exports.sendMacToPi = (macAddress) => {
     console.log('sending request ' + macAddress);
     request.post(
-        `http://192.168.0.107:8484/pi/sensors/bluetooth/users`, {
+        `http://${PI_LOCAL_IP}/pi/sensors/bluetooth/users`, {
             json: {
                 macAddress: macAddress
             }
@@ -17,4 +20,20 @@ module.exports.sendMacToPi = (macAddress) => {
         }
     );
 }
+
+module.exports.onOffLight = function(url,state){
+    console.log(url);
+      request.put(
+        url, {
+          json: {
+          "on": state
+          }
+        },
+        function(error,response,body){
+          if(!error && response.statusCode == 200){
+  
+          }
+        }
+      );
+  };
 

@@ -14,11 +14,21 @@ var fetchNotes = () => {
 
 var fetchSpecificSetting = (id, callback) => {
   var loadedSettings = fetchNotes();
+  var index;
+  var settings;
   if (loadedSettings.length > 0) { 
     for (i = loadedSettings.length - 1; i >= 0; --i) {
       if (loadedSettings[i].profile_id == id) {
-          return callback(loadedSettings[i]);
+          index = i; 
+          settings = true; 
       }
+    }
+    if(settings){
+      console.log('settings found ');
+      return callback(loadedSettings[index]);
+    }else {
+      console.log('no settings found');
+      return callback('no settings found');
     }
   }
 }
@@ -46,25 +56,31 @@ var saveNotes = (notes) => {
 var addNote = function (body, callback) {
   var duplicateNotes;
   var settings = fetchNotes();
+  var isHere = false; 
+  var index; 
 
   if (settings.length > 0) { // settings file is not empty 
     for (i = settings.length - 1; i >= 0; --i) {
       //console.log(i);
       //console.log(settings);
-      if (settings[i].profile_id !== body.profile_id) { // a new user is here!
-        //console.log(' if');
-        addIt(body, settings, callback);
-
-
+      if (settings[i].profile_id !== body.profile_id && !isHere) { // a new user is here!
+        console.log(' if');
+        isHere = false;
       } else if (settings[i].profile_id == body.profile_id) { // user is already there, but some setting has been changed
-        //console.log('else if');
-        settings.splice(i, 1); // delete it
-        addIt(body, settings, callback); // add it
-
+        console.log('else if');
+        //settings.splice(i, 1); // delete it
+        isHere = true;
+        index = i; 
+        //addIt(body, settings, callback); // add it
       }
     }
-  } else { // settings file is empty
-    //console.log('else');
+  }
+
+  if(isHere){
+    console.log('deleting it');
+    settings.splice(index, 1); // delete it
+    addIt(body, settings, callback); // add it
+  }else {
     addIt(body, settings, callback);
   }
 }
@@ -78,10 +94,31 @@ var addIt = function (body, settings, callback) {
   return callback();
 }
 
+var addAttribute = function (macAddress, state, callback){
+  var settings = fetchNotes();
+  if (settings.length > 0) { // settings file is not empty 
+    for (i = settings.length - 1; i >= 0; --i) {
+      if (settings[i].mac_address == macAddress) { 
+          console.log('inside condition');
+          settingObj = settings[i];
+          console.log(settingObj);
+          settingObj.is_home = state;
+          console.log(settingObj);
+          console.log(settingObj.is_home);
+          settings.splice(i, 1);
+          addIt(settingObj, settings, callback);
+          //callback();
+      }
+    }
+  }
+}
+
+
 
 module.exports =   { 
   fetchNotes,
   fetchSpecificSetting,
   getRequestedSetting,
-  addNote
+  addNote,
+  addAttribute
 };

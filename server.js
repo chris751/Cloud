@@ -10,6 +10,7 @@ var cookieParser = require('cookie-parser');
 var handlebars = require('./helpers/handlebars.js')(exphbs);
 var googleHelpers = require('./helpers/googleHelpers');
 var settingsHelper = require('./settings/settingsWriter');
+const communication = require('./communication/request');
 
 var app = express();
 app.use(cors());
@@ -24,7 +25,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 // parse application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
 app.use(cookieParser());
 app.set('trust proxy', 1) // trust first proxy
@@ -36,8 +37,6 @@ app.use(session({
     secure: true
   }
 }))
-
-
 
 var scopes = [
   'https://www.googleapis.com/auth/plus.me',
@@ -80,12 +79,12 @@ app.get('/auth/google/callback', function (req, res) {
 });
 
 app.get('/profile', function (req, res) {
-
-  // TODO load settings into cookie 
-
   if (req.session.user_id) { // check if id is present in cookie 
+    console.log('Authticated');
     settingsHelper.fetchSpecificSetting(req.session.user_id, function(settingInfo){
       console.log(settingInfo);
+      console.log('session id');
+      console.log(req.session.user_id);
       res.render('profile.hbs', {
         name: req.session.name,
         id: req.session.user_id,
@@ -94,16 +93,36 @@ app.get('/profile', function (req, res) {
     });
     
   } else { // user not authenticated
+    console.log('not authticated');
     res.redirect('/');
   }
 });
 
 app.post('/settings', function (request, res) {
+  console.log('this is what i got');
   console.log(request.body);
   settingsHelper.addNote(request.body, function response() {
     res.send('saved!');
   });
 });
+
+app.put('/isuserhome', function (req, res) {
+  console.log('this is what i got');
+  console.log(req.body);
+  var state = req.body.state;
+  var macAddress = req.body.user;
+  console.log(state);
+  
+  
+  settingsHelper.addAttribute(macAddress, state, function(){
+    console.log('Updated bluetooth setting');
+    res.send('OK');
+  });
+
+  //communication.onOffLight('http://192.168.0.108/api/zwxLWe5QUN6m3R0F92GoSOdT6rvq0cPw6THRxfJA/lights/1/state',state);
+  
+});
+
 
 app.listen(app.get('port'), function () {
   console.log('Node app is running on port', app.get('port'));
