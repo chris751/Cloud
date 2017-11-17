@@ -17,7 +17,7 @@
     "profile_id": "117092538965115122466",
     "profile_name": "Christian Maigaard",
     "mac_address": "fdb2b61222fe",
-    "is_home": "not set",
+    "is_home": true,
     "event_name": "arbejde",
     "cal_action": "Turn_off"
   }
