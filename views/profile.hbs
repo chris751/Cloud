@@ -11,6 +11,10 @@
         crossorigin="anonymous">
     <link href="//fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
     <script src="//code.jquery.com/jquery-1.9.1.js"></script>
+
+    {{!-- bootstrap toogle --}}
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 </head>
 
 <style>
@@ -23,31 +27,46 @@
     <div class="container">
         <h1>Welcome {{name}} - {{id}}</h1>
         <hr>
+        <h3>Settings</h3>
+        <small id="emailHelp" class="form-text text-muted">General settings for home configuration</small>
+                <br>
+        <p>Bluetooth MAC address</p>
 
-        <h3>Bluetooth MAC address</h3>
-           <div id="ifYes" style="display:none">
-                        <input type="text" form="registerform" name="profile_id" value="{{id}}">
-                        <input type="text" form="registerform" name="profile_name" value="{{name}}">
-                    </div>
+        <div style="display:none">
+            <input type="text" form="registerform" name="profile_id" value="{{id}}">
+            <input type="text" form="registerform" name="profile_name" value="{{name}}">
+        </div>
 
-                        <input type="text" class="form-control" form="registerform" name="mac_address" value="{{settings.mac_address}}">
-                        <input type="text" style="display:none" form="registerform" name="is_home" value="not set">
-                         <br>
+        <input type="text" class="form-control form-control-sm" form="registerform" name="mac_address" value="{{settings.mac_address}}">
+        <br>
+        <p>Home Address</p>
+        <input type="text" class="form-control form-control-sm" form="registerform" name="home_address" value="{{settings.home_address}}">
+        <br>
+        <p>Work Address</p>
+        <input type="text" class="form-control form-control-sm" form="registerform" name="work_address" value="{{settings.work_address}}">
+        <br>
+
 
         <div class="row">
             <div class="col-6" style="border-right:1px solid #989898;height:500px">
 
                 <h1>Events</h1>
+
                 <br>
                 <h3>Calendar</h3>
+                <small id="emailHelp" class="form-text text-muted">Type the name of the calendar event that you wish to add an action.</small>
+                <br>
                 <form id="registerform">
                     <div class="form-group">
                         <input type="text" name="event_name" class="form-control" aria-describedby="emailHelp" placeholder="Event name" value="{{settings.event_name}}">
-                        <small id="emailHelp" class="form-text text-muted">Type the name of the calendar event that you wish to add an action.</small>
+
                     </div>
                     <hr>
+
                     <br>
                     <br>
+                    <br>
+
                     <button type="submit" class="btn btn-primary">Save</button>
                 </form>
             </div>
@@ -57,13 +76,32 @@
                 <h1>Action</h1>
                 <br>
                 <h3>Calendar</h3>
+                <small id="emailHelp" class="form-text text-muted">Choose the action for the event</small>
+                <br>
                 <select class="custom-select" name="cal_action" form="registerform">
                     <option value="{{settings.cal_action}}">{{settings.cal_action}}</option>
                     <option value="Dim_light">Dim_light</option>
                     <option value="Increase_light">Increase_light</option>
                     <option value="Turn_off">Turn_off</option>
                 </select>
-                <small id="emailHelp" class="form-text text-muted">Choose the action for the event</small>
+
+                <hr>
+
+                <h3>When Home</h3>
+                <small id="emailHelp" class="form-text text-muted">Settings for when at home</small>
+                <br>
+                <input type="text" style="display:none" form="registerform" name="is_home" value="not set">
+
+                <input form="registerform" type="checkbox" name="on_off" checked="checked"> Turn on/off</label>
+                <br>
+                <br>
+                <input form="registerform" type="color" name="color" value="{{settings.color}}">
+                <br>
+                <br>
+                <input form="registerform" type="range" name="brightness" min="0" max="40000" value="{{settings.brightness}}">
+
+
+                <small id="emailHelp" class="form-text text-muted">Change the brightness </small>
                 <hr>
             </div>
         </div>
@@ -99,4 +137,5 @@
     </script>
 
 </body>
+
 </html>

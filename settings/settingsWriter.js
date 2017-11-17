@@ -16,19 +16,33 @@ var fetchSpecificSetting = (id, callback) => {
   var loadedSettings = fetchNotes();
   var index;
   var settings;
-  if (loadedSettings.length > 0) { 
+  if (loadedSettings.length > 0) {
     for (i = loadedSettings.length - 1; i >= 0; --i) {
       if (loadedSettings[i].profile_id == id) {
-          index = i; 
-          settings = true; 
+        index = i;
+        settings = true;
       }
     }
-    if(settings){
+    if (settings) {
       console.log('settings found ');
       return callback(loadedSettings[index]);
-    }else {
+    } else {
       console.log('no settings found');
       return callback('no settings found');
+    }
+  } else {
+    console.log('no settings found');
+    return callback('no settings found');
+  }
+}
+
+var getSettingsByMacAddress = (macAddress, callback) => {
+  var loadedSettings = fetchNotes();
+  if (loadedSettings.length > 0) {
+    for (i = loadedSettings.length - 1; i >= 0; --i) {
+      if (loadedSettings[i].mac_address == macAddress) { //we found the MAC address 
+          callback(loadedSettings[i]); 
+      }
     }
   }
 }
@@ -37,7 +51,7 @@ var getRequestedSetting = (setting, callback) => {
   var loadedSettings = fetchNotes();
   console.log('called with' + setting);
 
-  if (loadedSettings.length > 0) { 
+  if (loadedSettings.length > 0) {
     for (i = loadedSettings.length - 1; i >= 0; --i) {
       if (setting == 'event_name') {
         console.log('in here');
@@ -49,15 +63,15 @@ var getRequestedSetting = (setting, callback) => {
 
 var saveNotes = (notes) => {
   fs.writeFileSync('./settings/userSettings.json', JSON.stringify(notes, null, 2));
-  console.log(notes);
+  //console.log(notes);
   lightEngine.start(notes);
 };
 
 var addNote = function (body, callback) {
   var duplicateNotes;
   var settings = fetchNotes();
-  var isHere = false; 
-  var index; 
+  var isHere = false;
+  var index;
 
   if (settings.length > 0) { // settings file is not empty 
     for (i = settings.length - 1; i >= 0; --i) {
@@ -70,23 +84,22 @@ var addNote = function (body, callback) {
         console.log('else if');
         //settings.splice(i, 1); // delete it
         isHere = true;
-        index = i; 
+        index = i;
         //addIt(body, settings, callback); // add it
       }
     }
   }
-
-  if(isHere){
+  if (isHere) {
     console.log('deleting it');
     settings.splice(index, 1); // delete it
     addIt(body, settings, callback); // add it
-  }else {
+  } else {
     addIt(body, settings, callback);
   }
 }
 
 var addIt = function (body, settings, callback) {
-  console.log('adding it');
+  //console.log('adding it');
   settings.push(body);
   var uniqe = _.uniqBy(settings, 'profile_id');
   //console.log(uniqe);
@@ -94,31 +107,46 @@ var addIt = function (body, settings, callback) {
   return callback();
 }
 
-var addAttribute = function (macAddress, state, callback){
+var addAttribute = function (macAddress, state) {
   var settings = fetchNotes();
+  var didntFindAnything = true;
   if (settings.length > 0) { // settings file is not empty 
     for (i = settings.length - 1; i >= 0; --i) {
-      if (settings[i].mac_address == macAddress) { 
-          console.log('inside condition');
-          settingObj = settings[i];
-          console.log(settingObj);
-          settingObj.is_home = state;
-          console.log(settingObj);
-          console.log(settingObj.is_home);
-          settings.splice(i, 1);
-          addIt(settingObj, settings, callback);
-          //callback();
+      if (settings[i].mac_address == macAddress) {
+        settingObj = settings[i];
+        settingObj.is_home = state;
+        // settingObj.priority = true;
+        settings.splice(i, 1);
+        didntFindAnything = false;
+        addIt(settingObj, settings, function () {});
       }
+    }
+    if (didntFindAnything) {
+      console.log("the bluetooth address in the request didnt match any of the registered MAC addresses");
     }
   }
 }
 
-
+var getBluetoothData = function (callback) {
+  var settings = fetchNotes();
+  var bluetoothList = [];
+  if (settings.length > 0) { // settings file is not empty 
+    for (i = settings.length - 1; i >= 0; --i) {
+      if (settings[i].mac_address) {
+        bluetoothList.push(settings[i].mac_address);
+      }
+    }
+  }
+  console.log(bluetoothList);
+  callback(bluetoothList);
+}
 
 module.exports =   { 
   fetchNotes,
   fetchSpecificSetting,
   getRequestedSetting,
   addNote,
-  addAttribute
+  addAttribute,
+  getBluetoothData,
+  getSettingsByMacAddress
 };
