@@ -14,7 +14,7 @@ module.exports.sendMacToPi = (macAddress) => {
             if (!error && response.statusCode == 200) {
                 console.log(response.statusCode);
             }else {
-                console.log('ERROR response from Raspberry Pi ');
+                console.log('error response from Raspberry Pi!');
             }
         }
     );

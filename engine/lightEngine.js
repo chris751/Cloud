@@ -44,12 +44,15 @@ var prioritizeUserRights = function (macAddress, state, callback) {
     // implement some sort of security in the system when we send stuff to the backend from the frontend to eleminate faul use
     // when anyone is home call appropiate function
     if(priArray.length != 0){
+        console.log('someone is home - Turning on the light as specified by: ' + priArray[0]);
         turnOnLightWithUserPreferences();
+    }else{
+        console.log('Prioritation list is empty!(no is home) - Turning off light!');
     }
 }
 
 var turnOnLightWithUserPreferences = function(){
-    settingsHelper.getSettingsByMacAddress(priArray[0], function(settingsFromPrioritizedUser){
+    settingsHelper.getSettingsByAttributes('mac_address', priArray[0], function(settingsFromPrioritizedUser){
         console.log('settings fetches for prioritized user '+ '\n' + JSON.stringify(settingsFromPrioritizedUser));
     })
     //load user settings from priArray index 0

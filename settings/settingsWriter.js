@@ -18,7 +18,7 @@ var fetchSpecificSetting = (id, callback) => {
   var settings;
   if (loadedSettings.length > 0) {
     for (i = loadedSettings.length - 1; i >= 0; --i) {
-      if (loadedSettings[i].profile_id == id) {
+      if (loadedSettings[i].userInfo.profile_id == id) {
         index = i;
         settings = true;
       }
@@ -36,12 +36,23 @@ var fetchSpecificSetting = (id, callback) => {
   }
 }
 
-var getSettingsByMacAddress = (macAddress, callback) => {
+
+/**
+ * Returns all settings from matching value
+ *
+ * @param attribute value from settings that we are comparing
+ * @param value the actual value compared to attribute 
+ * 
+ */
+
+var getSettingsByAttributes = (attribute, value, callback) => {
   var loadedSettings = fetchNotes();
   if (loadedSettings.length > 0) {
     for (i = loadedSettings.length - 1; i >= 0; --i) {
-      if (loadedSettings[i].mac_address == macAddress) { //we found the MAC address 
-          callback(loadedSettings[i]); 
+      if (attribute == 'mac_address' && loadedSettings[i].userInfo.mac_address == value) { //we found the value
+        return callback(loadedSettings[i]); //return all the settings
+      } else {
+        return callback('no such setting');
       }
     }
   }
@@ -77,10 +88,10 @@ var addNote = function (body, callback) {
     for (i = settings.length - 1; i >= 0; --i) {
       //console.log(i);
       //console.log(settings);
-      if (settings[i].profile_id !== body.profile_id && !isHere) { // a new user is here!
+      if (settings[i].userInfo.profile_id !== body.userInfo.profile_id && !isHere) { // a new user is here!
         console.log(' if');
         isHere = false;
-      } else if (settings[i].profile_id == body.profile_id) { // user is already there, but some setting has been changed
+      } else if (settings[i].userInfo.profile_id == body.userInfo.profile_id) { // user is already there, but some setting has been changed
         console.log('else if');
         //settings.splice(i, 1); // delete it
         isHere = true;
@@ -107,33 +118,33 @@ var addIt = function (body, settings, callback) {
   return callback();
 }
 
-var addAttribute = function (macAddress, state) {
-  var settings = fetchNotes();
-  var didntFindAnything = true;
-  if (settings.length > 0) { // settings file is not empty 
-    for (i = settings.length - 1; i >= 0; --i) {
-      if (settings[i].mac_address == macAddress) {
-        settingObj = settings[i];
-        settingObj.is_home = state;
-        // settingObj.priority = true;
-        settings.splice(i, 1);
-        didntFindAnything = false;
-        addIt(settingObj, settings, function () {});
-      }
-    }
-    if (didntFindAnything) {
-      console.log("the bluetooth address in the request didnt match any of the registered MAC addresses");
-    }
-  }
-}
+// var addAttribute = function (macAddress, state) {
+//   var settings = fetchNotes();
+//   var didntFindAnything = true;
+//   if (settings.length > 0) { // settings file is not empty 
+//     for (i = settings.length - 1; i >= 0; --i) {
+//       if (settings[i].userInfo.mac_address == macAddress) {
+//         settingObj = settings[i];
+//         settingObj.is_home = state;
+//         // settingObj.priority = true;
+//         settings.splice(i, 1);
+//         didntFindAnything = false;
+//         addIt(settingObj, settings, function () {});
+//       }
+//     }
+//     if (didntFindAnything) {
+//       console.log("the bluetooth address in the request didnt match any of the registered MAC addresses");
+//     }
+//   }
+// }
 
 var getBluetoothData = function (callback) {
   var settings = fetchNotes();
   var bluetoothList = [];
   if (settings.length > 0) { // settings file is not empty 
     for (i = settings.length - 1; i >= 0; --i) {
-      if (settings[i].mac_address) {
-        bluetoothList.push(settings[i].mac_address);
+      if (settings[i].userInfo.mac_address) {
+        bluetoothList.push(settings[i].userInfo.mac_address);
       }
     }
   }
@@ -146,7 +157,6 @@ module.exports =   { 
   fetchSpecificSetting,
   getRequestedSetting,
   addNote,
-  addAttribute,
   getBluetoothData,
-  getSettingsByMacAddress
+  getSettingsByAttributes
 };

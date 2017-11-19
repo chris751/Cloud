@@ -90,7 +90,7 @@ app.get('/profile', function (req, res) {
       res.render('profile.hbs', {
         name: req.session.name,
         id: req.session.user_id,
-        settings: settingInfo
+        userInfo: settingInfo
       });
     });
 
@@ -117,7 +117,37 @@ app.get('/bluetoothdata', function (req, res) {
 app.post('/settings', function (request, res) {
   console.log('received new settings!');
   console.log(request.body);
-  settingsHelper.addNote(request.body, function response() {
+
+  var userInfo = {
+    profile_name : request.body.profile_name,
+    profile_id : request.body.profile_id,
+    mac_address : request.body.mac_address,
+    home_address: request.body.home_address,
+    work_address: request.body.work_address
+  }
+
+  var calendar = {
+    event_name: request.body.event_name,
+    cal_action: request.body.cal_action,
+  }
+
+  var isHome = {
+    on_off: request.body.on_off,
+    color: request.body.color,
+    brightness: request.body.brightness
+  }
+
+  var settings = {
+   calendar_settings : calendar,
+   is_home_settings : isHome
+  }
+
+  var user = {
+    userInfo: userInfo,
+    settings: settings
+  }
+
+  settingsHelper.addNote(user, function response() {
     console.log('Saved new settings');
     res.send('saved!');
   });
@@ -131,7 +161,7 @@ app.put('/isuserhome', function (req, res) {
   console.log(req.body);
   var state = req.body.state;
   var macAddress = req.body.macAddress;
-  settingsHelper.addAttribute(macAddress, state);
+  //settingsHelper.addAttribute(macAddress, state);
   lightEngine.prioritizeUserRights(macAddress, state, function (prioritationList) { // prioritize users 
     console.log('prioritation list = ' + prioritationList);
     res.send('OK');
