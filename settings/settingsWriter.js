@@ -112,7 +112,7 @@ var addNote = function (body, callback) {
 var addIt = function (body, settings, callback) {
   //console.log('adding it');
   settings.push(body);
-  var uniqe = _.uniqBy(settings, 'profile_id');
+  var uniqe = _.uniqBy(settings, 'userInfo.profile_id');
   //console.log(uniqe);
   saveNotes(uniqe);
   return callback();

@@ -9,12 +9,31 @@
     },
     "settings": {
       "calendar_settings": {
-        "event_name": "arbejde",
+        "event_name": "",
         "cal_action": "Turn_off"
       },
       "is_home_settings": {
         "color": "#1d8f1e",
         "brightness": "37229"
+      }
+    }
+  },
+  {
+    "userInfo": {
+      "profile_name": "",
+      "profile_id": "104057105667853080193",
+      "mac_address": "something",
+      "home_address": "home",
+      "work_address": "work"
+    },
+    "settings": {
+      "calendar_settings": {
+        "event_name": "sup son",
+        "cal_action": "Turn_off"
+      },
+      "is_home_settings": {
+        "color": "#2bcb26",
+        "brightness": "30569"
       }
     }
   }

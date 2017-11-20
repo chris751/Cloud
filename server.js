@@ -12,6 +12,7 @@ var googleHelpers = require('./helpers/googleHelpers');
 var settingsHelper = require('./settings/settingsWriter');
 const communication = require('./communication/request');
 const lightEngine = require('./engine/lightengine');
+const format = require('./helpers/format');
 
 var app = express();
 app.use(cors());
@@ -102,7 +103,7 @@ app.get('/profile', function (req, res) {
 
 // this endpoint is called from the Raspberry PI on boot to get the MAC addresses stored in the settings file
 app.get('/bluetoothdata', function (req, res) {
-  console.log('recieved request for BlueTooth MAC addresses');
+  console.log('recieved request for all BlueTooth MAC addresses in the cloud');
   settingsHelper.getBluetoothData(function (list) { // get saved bluetooth MAC addresses from settings file
     var obj = {
       macAddress: list
@@ -117,36 +118,13 @@ app.get('/bluetoothdata', function (req, res) {
 app.post('/settings', function (request, res) {
   console.log('received new settings!');
   console.log(request.body);
-
-  var userInfo = {
-    profile_name : request.body.profile_name,
-    profile_id : request.body.profile_id,
-    mac_address : request.body.mac_address,
-    home_address: request.body.home_address,
-    work_address: request.body.work_address
-  }
-
-  var calendar = {
-    event_name: request.body.event_name,
-    cal_action: request.body.cal_action,
-  }
-
-  var isHome = {
-    on_off: request.body.on_off,
-    color: request.body.color,
-    brightness: request.body.brightness
-  }
-
-  var settings = {
-   calendar_settings : calendar,
-   is_home_settings : isHome
-  }
-
-  var user = {
-    userInfo: userInfo,
-    settings: settings
-  }
-
+  var user; 
+  format.formatSettings(request.body, function(formattedSettings){
+    user = formattedSettings;
+  })
+  console.log('users');
+  console.log(user);
+  
   settingsHelper.addNote(user, function response() {
     console.log('Saved new settings');
     res.send('saved!');
