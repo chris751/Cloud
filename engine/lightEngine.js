@@ -1,4 +1,6 @@
 const request = require('request');
+var moment = require('moment');
+require("moment-duration-format");
 const communication = require('./../communication/request');
 var settingsHelper = require('./../settings/settingsWriter');
 var directions = require('./../api/directions');
@@ -6,7 +8,6 @@ var directions = require('./../api/directions');
 var start = (settings) => {
     checkForChanges(settings);
     //checkForBluetoothChanges(settings);
-    directions.getTravelTime();
 }
 
 var newAddressArray = [];
@@ -43,6 +44,7 @@ var prioritizeUserRights = function (macAddress, state, callback) {
     callback(priArray);
     // TODO only call this when the user is controlled is actually changed and not just whenever some change has been done.
     // TODO refactor settingsWriter so that functions that only read are in a separate file
+    
     // implement some sort of security in the system when we send stuff to the backend from the frontend to eleminate faul use
     // when anyone is home call appropiate function
     if(priArray.length != 0){
@@ -66,7 +68,25 @@ var turnOnLightWithUserPreferences = function(){
 
 
 
+var checkIfUserShouldBeLeavingHome = function (){
+    // TODO get event date from every user calender (should maybe be its whole own method and should input to this method)
+    var d = new Date();
+    console.log(d.toLocaleString('en-GB', { hour12: false }));
+    var now = d.toLocaleString('en-GB', { hour12: false })
+    var event = "11/20/2017, 23:51:34";
+    
+    var ms = moment(now,"MM/DD/YYYY HH:mm:ss").diff(moment(event,"MM/DD/YYYY HH:mm:ss"));
+    var d = moment.duration(ms);
+    var s = d.format("hh:mm:ss");
+    console.log('difference ' + s);
 
+    // TODO program condition that alerts user with specified lighting signal if event is within specified time range
+    // TODO Implement weather API that might also show what the weather is at this time
+} 
+
+setInterval(function () { 
+    checkIfUserShouldBeLeavingHome();
+}, 2000); 
 
 
 module.exports = { 

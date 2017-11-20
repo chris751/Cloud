@@ -1,5 +1,4 @@
 
-
 const request = require('request');
 
 var API_KEY = 'AIzaSyB7IQtJAtVXXQjxn7LqAgjDwlUCR7qkJAw';
@@ -8,7 +7,6 @@ var ORIGIN = encodeURI('Grete Løchtes Gade 1, 9-4, 8000, aarhus'); //encode for
 var DESTINATION = encodeURI('Åbogade 34, 8200 Aarhus N, Danmark'); //encode for URL friendliness
 var TRAVEL_MODE = 'walking'; 
 var REQUEST_URL = `${GOOGLE_BASE_URL}origin=${ORIGIN}&destination=${DESTINATION}&mode=${TRAVEL_MODE}&key=${API_KEY}`
-
 
 var getTravelTime = () => {
   //console.log(REQUEST_URL);
