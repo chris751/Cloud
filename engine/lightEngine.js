@@ -1,10 +1,12 @@
 const request = require('request');
 const communication = require('./../communication/request');
 var settingsHelper = require('./../settings/settingsWriter');
+var directions = require('./../api/directions');
 
 var start = (settings) => {
     checkForChanges(settings);
     //checkForBluetoothChanges(settings);
+    directions.getTravelTime();
 }
 
 var newAddressArray = [];

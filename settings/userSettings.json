@@ -1,25 +1,6 @@
 [
   {
     "userInfo": {
-      "profile_name": "Christian Maigaard",
-      "profile_id": "117092538965115122466",
-      "mac_address": "fdb2b61222fe",
-      "home_address": "Grete Løchtes Gade 1, 9-4, 8000, aarhus",
-      "work_address": "Åbogade 34, 8200 Aarhus N, Danmark"
-    },
-    "settings": {
-      "calendar_settings": {
-        "event_name": "",
-        "cal_action": "Turn_off"
-      },
-      "is_home_settings": {
-        "color": "#1d8f1e",
-        "brightness": "37229"
-      }
-    }
-  },
-  {
-    "userInfo": {
       "profile_name": "",
       "profile_id": "104057105667853080193",
       "mac_address": "something",
@@ -34,6 +15,25 @@
       "is_home_settings": {
         "color": "#2bcb26",
         "brightness": "30569"
+      }
+    }
+  },
+  {
+    "userInfo": {
+      "profile_name": "Christian Maigaard",
+      "profile_id": "117092538965115122466",
+      "mac_address": "fdb2b61222fe",
+      "home_address": "Grete Løchtes Gade 1, 9-4, 8000, aarhus",
+      "work_address": "Åbogade 34, 8200 Aarhus N, Danmark"
+    },
+    "settings": {
+      "calendar_settings": {
+        "event_name": "arbejde",
+        "cal_action": "Turn_off"
+      },
+      "is_home_settings": {
+        "color": "#55d26b",
+        "brightness": "6592"
       }
     }
   }
