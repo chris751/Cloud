@@ -50,11 +50,26 @@ var getSettingsByAttributes = (attribute, value, callback) => {
   if (loadedSettings.length > 0) {
     for (i = loadedSettings.length - 1; i >= 0; --i) {
       if (attribute == 'mac_address' && loadedSettings[i].userInfo.mac_address == value) { //we found the value
-        return callback(loadedSettings[i]); //return all the settings
+         callback(loadedSettings[i]); //return all the settings
       } else {
         return callback('no such setting');
       }
     }
+  }
+}
+
+var getSettingsFromPriArray = (attribute, value, callback) => {
+  var loadedSettings = fetchNotes();
+  var array = [];
+  if (loadedSettings.length > 0) {
+    for (i = loadedSettings.length - 1; i >= 0; --i) {
+      for (j = value.length - 1; j >= 0; --j){
+        if (attribute == 'mac_address' && loadedSettings[i].userInfo.mac_address == value[j]) { //we found the value
+          array.push(loadedSettings[i]);
+        }
+      }
+    }
+    callback(array);
   }
 }
 
@@ -74,7 +89,7 @@ var getRequestedSetting = (setting, callback) => {
 
 var saveNotes = (notes) => {
   fs.writeFileSync('./settings/userSettings.json', JSON.stringify(notes, null, 2));
-  //console.log(notes);
+  console.log(notes);
   lightEngine.start(notes);
 };
 
@@ -152,11 +167,13 @@ var getBluetoothData = function (callback) {
   callback(bluetoothList);
 }
 
+
 module.exports =   { 
   fetchNotes,
   fetchSpecificSetting,
   getRequestedSetting,
   addNote,
   getBluetoothData,
-  getSettingsByAttributes
+  getSettingsByAttributes,
+  getSettingsFromPriArray
 };

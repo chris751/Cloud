@@ -45,6 +45,15 @@
         <p>Work Address</p>
         <input type="text" class="form-control form-control-sm" form="registerform" name="work_address" value="{{userInfo.userInfo.work_address}}">
         <br>
+        <p>Method of Travel</p>
+          <select class="custom-select" name="travel_mode" form="registerform">
+                    <option value="{{userInfo.settings.calendar_settings.travel_mode}}">{{userInfo.settings.calendar_settings.travel_mode}}</option>
+                    <option value="driving">driving</option>
+                    <option value="bicycling">bicycling</option>
+                    <option value="walking">walking</option>
+                    <option value="transit">transit</option>
+                </select>
+                 <small id="emailHelp" class="form-text text-muted">Used to calculate the travel duration to calendar events</small>
 
 
         <div class="row">

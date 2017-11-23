@@ -10,6 +10,7 @@ var cookieParser = require('cookie-parser');
 var handlebars = require('./helpers/handlebars.js')(exphbs);
 var googleHelpers = require('./helpers/googleHelpers');
 var settingsHelper = require('./settings/settingsWriter');
+var tokenWriter = require('./settings/tokenWriter');
 const communication = require('./communication/request');
 const lightEngine = require('./engine/lightengine');
 const format = require('./helpers/format');
@@ -66,10 +67,11 @@ app.get('/auth/google/callback', function (req, res) {
     googleHelpers.getToken(oauth2Client, code, function (err, tokens) {
       if (!err) {
         oauth2Client.setCredentials(tokens);
-        googleHelpers.listCalendarEvents(oauth2Client, google);
+        //googleHelpers.listCalendarEvents(oauth2Client);
         googleHelpers.gAuth(oauth2Client, function (userInfo) {
           if (userInfo !== 'error') {
             req.session.user_id = userInfo.id;
+            tokenWriter.saveAuthToFile(tokens, userInfo.id)
             req.session.name = userInfo.name;
             res.redirect('/profile'); // when authenticated send to profile site
           }
@@ -80,6 +82,10 @@ app.get('/auth/google/callback', function (req, res) {
     })
   });
 });
+
+
+
+
 
 app.get('/profile', function (req, res) {
   if (req.session.user_id) { // check if id is present in cookie 
@@ -117,13 +123,11 @@ app.get('/bluetoothdata', function (req, res) {
 //this endpoint is called from the UI when a user presses the save button
 app.post('/settings', function (request, res) {
   console.log('received new settings!');
-  console.log(request.body);
+  //console.log(request.body);
   var user; 
   format.formatSettings(request.body, function(formattedSettings){
     user = formattedSettings;
   })
-  console.log('users');
-  console.log(user);
   
   settingsHelper.addNote(user, function response() {
     console.log('Saved new settings');
@@ -146,6 +150,14 @@ app.put('/isuserhome', function (req, res) {
   })
   //communication.onOffLight('http://192.168.0.108/api/zwxLWe5QUN6m3R0F92GoSOdT6rvq0cPw6THRxfJA/lights/1/state',state);
 });
+
+//
+app.put('/sensors/light', function (req, res) {
+  console.log('test put received');
+  console.log(req.body);
+  res.send('OK');
+});
+
 
 app.listen(app.get('port'), function () {
   console.log('Node app is running on port', app.get('port'));

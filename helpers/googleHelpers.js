@@ -14,8 +14,10 @@ var CALLBACK_URL = `${ENVIROMENT_URL}/auth/google/callback`;
  *
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
-exports.listCalendarEvents = function (auth, googles) {
-    var calendar = googles.calendar('v3');
+exports.listCalendarEvents = function (auth, callback) {
+  resArray = [];  
+  console.log(auth);
+    var calendar = google.calendar('v3');
     calendar.events.list({
       auth: auth,
       calendarId: 'primary',
@@ -37,10 +39,13 @@ exports.listCalendarEvents = function (auth, googles) {
           var event = events[i];
           var start = event.start.dateTime || event.start.date;
           console.log('%s - %s', start, event.summary);
+          resArray.push(event);
         }
+        callback(resArray);
       }
     });
   }
+
 
 exports.gAuth = function (oauth2Client, callback) {
   google.oauth2("v2").userinfo.v2.me.get({

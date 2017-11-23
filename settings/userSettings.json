@@ -29,7 +29,8 @@
     "settings": {
       "calendar_settings": {
         "event_name": "arbejde",
-        "cal_action": "Turn_off"
+        "cal_action": "Turn_off",
+        "travel_mode": "driving"
       },
       "is_home_settings": {
         "color": "#55d26b",
