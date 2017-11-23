@@ -73,19 +73,19 @@ var getSettingsFromPriArray = (attribute, value, callback) => {
   }
 }
 
-var getRequestedSetting = (setting, callback) => {
-  var loadedSettings = fetchNotes();
-  console.log('called with' + setting);
+// var getRequestedSetting = (setting, callback) => {
+//   var loadedSettings = fetchNotes();
+//   console.log('called with' + setting);
 
-  if (loadedSettings.length > 0) {
-    for (i = loadedSettings.length - 1; i >= 0; --i) {
-      if (setting == 'event_name') {
-        console.log('in here');
-        return 'loadedSettings[i].cal_event';
-      }
-    }
-  }
-}
+//   if (loadedSettings.length > 0) {
+//     for (i = loadedSettings.length - 1; i >= 0; --i) {
+//       if (setting == 'event_name') {
+//         console.log('in here');
+//         return 'loadedSettings[i].cal_event';
+//       }
+//     }
+//   }
+// }
 
 var saveNotes = (notes) => {
   fs.writeFileSync('./settings/userSettings.json', JSON.stringify(notes, null, 2));
@@ -171,7 +171,6 @@ var getBluetoothData = function (callback) {
 module.exports =   { 
   fetchNotes,
   fetchSpecificSetting,
-  getRequestedSetting,
   addNote,
   getBluetoothData,
   getSettingsByAttributes,

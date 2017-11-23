@@ -46,6 +46,21 @@ var saveNotes = (notes) => {
 };
 
 
+var getTokenById = (id, callback) => {
+  var token = fetchTokens();
+  if (token.length > 0) {
+    for (i = token.length - 1; i >= 0; --i) {
+      if (token[i].id == id) { //we found the value
+         callback(token[i].token); //return only the tokens
+      } else {
+        return callback('no such setting');
+      }
+    }
+  }
+}
+
+
 module.exports =   { 
-  saveAuthToFile
+  saveAuthToFile,
+  getTokenById
 };

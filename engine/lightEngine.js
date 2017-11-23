@@ -3,6 +3,7 @@ var moment = require('moment');
 require("moment-duration-format");
 const communication = require('./../communication/request');
 var settingsHelper = require('./../settings/settingsWriter');
+var tokenWriter = require('./../settings/tokenWriter');
 var directions = require('./../api/directions');
 var googleHelpers = require('./../helpers/googleHelpers');
 
@@ -75,13 +76,15 @@ var turnOnLightWithUserPreferences = function(){
 // fetch settings from users that are home
 var fetchSettingsFromPriArray = function (){
     settingsHelper.getSettingsFromPriArray('mac_address', priArray, function(settingsFromPriArray){
-        var tokens = settingsFromPriArray[0].userInfo.tokens;
+        var tokens;
         var userId = settingsFromPriArray[0].userInfo.profile_id;
         var travel_mode = settingsFromPriArray[0].settings.calendar_settings.travel_mode;
+        tokenWriter.getTokenById(userId, (token) => {tokens = token;})
         //fetch calendar data from all users aswell
         for (i = 0; i < settingsFromPriArray.length; i++) { 
 
         }
+        console.log(tokens);
         googleHelpers.getClient(function (oauth2Client) {
             oauth2Client.setCredentials(tokens);
             googleHelpers.listCalendarEvents(oauth2Client, function (events){
@@ -90,6 +93,7 @@ var fetchSettingsFromPriArray = function (){
                 checkIfUserShouldBeLeavingHome(events[0], userId, travel_mode, function (shouldLeave){
                     if(shouldLeave){
                         console.log('blink blink - You should leave for work now!')
+                        // TODO -- Actually blink the light 
                     }else {
                         console.log('You still have time bro')
                     }
@@ -109,8 +113,7 @@ var checkIfUserShouldBeLeavingHome = function (event, userId, travel_mode, callb
         console.log(travelDuration);
         console.log(typeof(travelDuration));
         console.log(timeToEvent);
-
-        if(travelDuration >= timeToEvent){ // give 5 minutes headroom
+        if(travelDuration >= timeToEvent && timeToEvent != 'e'){ // give 5 minutes headroom
             callback(true);
         }else {
             callback(false);
@@ -135,11 +138,17 @@ var compareTime = function(event){
     
     var ms = moment(now,"MM/DD/YYYY HH:mm:ss").diff(moment(event,"YYYY/MM/DD HH:mm:ss"));
     var difference = moment.duration(ms);
+    console.log(difference);
     var seconds = difference._milliseconds*0.001;
-    seconds = seconds.toString();
-    seconds = seconds.replace("-", "");
-    parseInt(seconds);
-    return seconds; 
+    if (seconds < 0){ // event has not passed
+        seconds = seconds.toString();
+        seconds = seconds.replace("-", ""); // remove - so that we can compare the numbers
+        parseInt(seconds);
+        return seconds; 
+    } else {
+        console.log('event has already passed');
+        return 'e'; // event has already begun
+    }
 }
 
 
