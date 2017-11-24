@@ -14,6 +14,7 @@ var tokenWriter = require('./settings/tokenWriter');
 const communication = require('./communication/request');
 const lightEngine = require('./engine/lightengine');
 const format = require('./helpers/format');
+const constants = require('./communication/constants');
 
 var app = express();
 app.use(cors());
@@ -153,11 +154,20 @@ app.put('/isuserhome', function (req, res) {
 
 //
 app.put('/sensors/light', function (req, res) {
-  console.log('test put received');
+  //console.log('test put received');
   console.log(req.body);
+  console.log(req.body.LightValue.value);
+  var light =req.body.LightValue.value
+  if(light < 300){
+  communication.adjustBrightness(constants.PI_LOCAL_IP + '/pi/actuators/lights/1/functions/adjustBrightness', 254);
+}else if (light < 800){
+  communication.adjustBrightness(constants.PI_LOCAL_IP + '/pi/actuators/lights/1/functions/adjustBrightness', 100)
+} else {
+  communication.adjustBrightness(constants.PI_LOCAL_IP + '/pi/actuators/lights/1/functions/adjustBrightness', 0)
+}
   res.send('OK');
 });
-
+ 
 
 app.listen(app.get('port'), function () {
   console.log('Node app is running on port', app.get('port'));
