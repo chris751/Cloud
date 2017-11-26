@@ -50,11 +50,12 @@ var getSettingsByAttributes = (attribute, value, callback) => {
   if (loadedSettings.length > 0) {
     for (i = loadedSettings.length - 1; i >= 0; --i) {
       if (attribute == 'mac_address' && loadedSettings[i].userInfo.mac_address == value) { //we found the value
+          callback(loadedSettings[i]); //return all the settings
+      } if (attribute == 'id' && loadedSettings[i].userInfo.id == value) { //we found the value
          callback(loadedSettings[i]); //return all the settings
-      } else {
-        return callback('no such setting');
-      }
+        }
     }
+     callback ('no such setting');
   }
 }
 

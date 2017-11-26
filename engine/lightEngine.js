@@ -46,48 +46,64 @@ var prioritizeUserRights = function (macAddress, state, callback) {
         }
     }
     callback(priArray);
-    // TODO only call this when the user is controlled is actually changed and not just whenever some change has been done.
-    // TODO refactor settingsWriter so that functions that only read are in a separate file
-    // TODO FINDABILITY - Raspberry PI should send avalable devices in home network with their properties, that is then available in the UI 
+    evaluateLightingConditions();
+}
 
-    // implement some sort of security in the system when we send stuff to the backend from the frontend to eleminate faul use
-
-    // when anyone is home call appropiate function
+var evaluateLightingConditions = () => {
     if (priArray.length != 0) {
         console.log('someone is home - Turning on the light as specified by: ' + priArray[0]);
-        communication.onOffLight(constants.PI_LOCAL_IP + '/pi/actuators/lights/1/functions/onoff', true)
-        //turnOnLightWithUserPreferences();
-        fetchCalendarEventsFromUsersThatAreHome((allRelevantEvent) => {
-            console.log('here are the closest event from all users at home!');
-                for (i = 0; i < allRelevantEvent.length; i++) {
-                    console.log(allRelevantEvent[i]);
-                    checkIfUserShouldBeLeavingHome(allRelevantEvent[i], allRelevantEvent[i].id, 'driving', function (shouldLeave, timeToEvent) {
-                        if (shouldLeave) {
-                            console.log('blink blink - You should leave for work now!');
-                            notificationLight(constants.PI_LOCAL_IP + '/pi/actuators/lights/1/functions/blink', 6);
-                        } else {
-                            console.log('Not time to leave yet , you are due to leave in ' + timeToEvent / 60 + ' minutes');
-                            //setTimeout(checkIfUserShouldBeLeavingHome, timeToEvent * 1000 + 10000) // convert seconds to ms, wait 10 secs ekstra to be sure its go time
-                        }
-                    });                 
-                }
-        });
-        //communication.notificationLight(constants.PI_LOCAL_IP + '/pi/actuators/lights/1/blink', 2);
+        checkIfLightShouldNotifyuser();
     } else {
         console.log('Prioritation list is empty!(no one is home) - Turning off light!');
         communication.onOffLight(constants.PI_LOCAL_IP + '/pi/actuators/lights/1/functions/onoff', false)
     }
 }
 
-var turnOnLightWithUserPreferences = function () {
-    settingsHelper.getSettingsByAttributes('mac_address', priArray[0], function (settingsFromPrioritizedUser) {
-        console.log('settings fetches for prioritized user ' + '\n' + JSON.stringify(settingsFromPrioritizedUser));
-    })
-    // load user settings from priArray index 0
-    // sanitize 
-    // info to get : on/off, brightness, color
 
-    // communication.toggleLightWithUserSettings();
+var checkIfLightShouldNotifyuser = () => {
+    toggleLight(true) // turn on light
+    //turnOnLightWithUserPreferences();
+    fetchCalendarEventsFromUsersThatAreHome((allRelevantEvent, settingsFromPriArray) => {
+        eventMatchesSettings = false;
+        console.log('here are the closest event from all users at home!');
+        console.log(allRelevantEvent);
+        console.log('here are the settigns');
+        console.log(settingsFromPriArray);
+        for (i = 0; i < allRelevantEvent.length; i++) { //check for all upcomming events if they should be leaving
+            for (j = 0; j < settingsFromPriArray.length; j++) {
+                if (allRelevantEvent[i].id == settingsFromPriArray[j].userInfo.profile_id) {
+                    console.log(allRelevantEvent[i].id + ' matched ' + settingsFromPriArray[j].userInfo.profile_id);
+                    var travelMode = settingsFromPriArray[j].settings.calendar_settings.travel_mode;
+                    var eventName = settingsFromPriArray[j].settings.calendar_settings.event_name;
+                    if (eventName == allRelevantEvent[i].summary) {
+                        console.log('event matched user setttings');
+                        eventMatchesSettings = true;
+                    } else {
+                        console.log('event did not match user settings');
+                        console.log(eventName + '/=' + allRelevantEvent[i].summary);
+                        eventMatchesSettings = false;
+                    }
+                }
+            }
+            if (eventMatchesSettings) {
+                checkIfUserShouldBeLeavingHome(allRelevantEvent[i], allRelevantEvent[i].id, travelMode, function (shouldLeave, timeToEvent) {
+                    if (shouldLeave) {
+                        console.log('blink blink - You should leave for work now!');
+                        communication.notificationLight(constants.PI_LOCAL_IP + '/pi/actuators/lights/1/functions/blink', 6);
+                    } else {
+                        console.log('Not time to leave yet , you are due to leave in ' + timeToEvent / 60 + ' minutes');
+                        //call method again when user actually has to leave
+                        setTimeout(evaluateLightingConditions, timeToEvent * 1000 + 10000) // convert seconds to ms, wait 10 secs ekstra to be sure its go time
+                    }
+                });
+            }
+        }
+    });
+}
+
+
+var toggleLight = (state) => {
+    communication.onOffLight(constants.PI_LOCAL_IP + '/pi/actuators/lights/1/functions/onoff', state);
 }
 
 // fetch settings from users that are home
@@ -106,8 +122,8 @@ var fetchTokens = function (userId, callback) {
 }
 
 var fetchCalendarEventsFromUsersThatAreHome = (callback) => {
-    var calendarEvents = [];
     fetchSettingsFromPriArray((settingsFromPriArray) => {
+        var calendarEvents = [];
         var userIdArray = [];
         for (i = 0; i < settingsFromPriArray.length; i++) {
             var userId = settingsFromPriArray[i].userInfo.profile_id;
@@ -115,61 +131,54 @@ var fetchCalendarEventsFromUsersThatAreHome = (callback) => {
             userIdArray.push(userId);
         }
         fetchTokens(userIdArray, (tokens) => {
-           console.log(tokens);
-           console.log('called');
-            console.log('token list ' + tokens.token)
             for (i = 0; i < tokens.length; i++) {
                 var idToSave = tokens[i].id;
                 console.log('Id to save' + idToSave);
                 fetchCalendarEvents(tokens[i].token, (calendarEvent) => {
-                    console.log('i have fetched the events for ' + i + ' us ers');
+                    console.log('i have fetched the events for ' + i + ' users');
                     calendarEvent.id = idToSave;
                     console.log(calendarEvent)
                     calendarEvents.push(calendarEvent);
                     if (calendarEvents.length == tokens.length) { // If we are done getting all the calendar events
-                        callback(calendarEvents);
+                        callback(calendarEvents, settingsFromPriArray);
                     }
                 });
             }
         });
     })
-
 }
 
 var fetchCalendarEvents = (token, callback) => {
     googleHelpers.getClient(function (oauth2Client) {
         oauth2Client.setCredentials(token);
         googleHelpers.listCalendarEvents(oauth2Client, function (events) {
-            callback(events[0]);
+            callback(events[0]); // we only want the first event, since that is the upcomming event
         });
     });
 }
 
 var checkIfUserShouldBeLeavingHome = function (event, userId, travel_mode, callback) {
-    console.log(event.location);
+    console.log('checking how long is takes to be using: ' + travel_mode + ' to get to ' + event.location);
     directions.getTravelTime(travel_mode, event.location, function (travelDuration) {
         var eventStart = event.start.dateTime || event.start.date;
         var timeToEvent = compareTime(eventStart);
         travelDuration = travelDuration + 5 * 60; // give 5 minutes headroom
-
-        console.log(travelDuration);
-        console.log(typeof (travelDuration));
-        console.log(timeToEvent);
+        console.log('it will take: '+ travelDuration/60 + ' minutes ' +  'and there is: ' + timeToEvent/60 + ' untill the event begins');
         if (travelDuration >= timeToEvent && timeToEvent != 'e') { // give 5 minutes headroom
             callback(true, timeToEvent - travelDuration);
-        } else {
+        } else if (timeToEvent != 'e') {
             callback(false, timeToEvent - travelDuration);
+        } else {
+            console.log('event has passed');
         }
     });
-    // TODO program condition that alerts user with specified lighting signal if event is within specified time range
-    // TODO Implement weather API that might also show what the weather is at this time
 }
 
 var compareTime = function (event) {
     var d = new Date();
-    console.log(d.toLocaleString('en-GB', {
-        hour12: false
-    }));
+    // console.log(d.toLocaleString('en-GB', {
+    //     hour12: false
+    // }));
     var now = d.toLocaleString('en-GB', {
         hour12: false
     })
@@ -184,12 +193,9 @@ var compareTime = function (event) {
         parseInt(seconds);
         return seconds;
     } else {
-        console.log('event has already passed');
         return 'e'; // event has already begun
     }
 }
-
-
 
 module.exports = { 
     start,

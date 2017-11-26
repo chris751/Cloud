@@ -4,13 +4,13 @@
       "profile_name": "",
       "profile_id": "104057105667853080193",
       "mac_address": "something",
-      "home_address": "home",
-      "work_address": "work"
+      "home_address": "Det Store Havnehus, Grete Løchtes Gade 1, 8000 Aarhus, Aarhus C"
     },
     "settings": {
       "calendar_settings": {
-        "event_name": "sup son",
-        "cal_action": "Turn_off"
+        "event_name": "testing",
+        "cal_action": "Turn_off",
+        "travel_mode": "bicycling"
       },
       "is_home_settings": {
         "color": "#2bcb26",
@@ -27,7 +27,7 @@
     },
     "settings": {
       "calendar_settings": {
-        "event_name": "arbejde",
+        "event_name": "Arbejde",
         "cal_action": "Turn_off",
         "travel_mode": "transit"
       },
