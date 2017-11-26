@@ -63,30 +63,30 @@ var evaluateLightingConditions = () => {
 var checkIfLightShouldNotifyuser = () => {
     toggleLight(true) // turn on light
     //turnOnLightWithUserPreferences();
-    fetchCalendarEventsFromUsersThatAreHome((allRelevantEvent, settingsFromPriArray) => {
+    fetchCalendarEventsFromUsersThatAreHome( (event, settingsFromPriArray) => {
         eventMatchesSettings = false;
-        console.log('here are the closest event from all users at home!');
-        console.log(allRelevantEvent);
+        console.log('here is a event');
+        console.log(event);
         console.log('here are the settigns');
         console.log(settingsFromPriArray);
-        for (i = 0; i < allRelevantEvent.length; i++) { //check for all upcomming events if they should be leaving
             for (j = 0; j < settingsFromPriArray.length; j++) {
-                if (allRelevantEvent[i].id == settingsFromPriArray[j].userInfo.profile_id) {
-                    console.log(allRelevantEvent[i].id + ' matched ' + settingsFromPriArray[j].userInfo.profile_id);
+                if (event.id == settingsFromPriArray[j].userInfo.profile_id) {
+                    console.log(event.id + ' matched ' + settingsFromPriArray[j].userInfo.profile_id);
                     var travelMode = settingsFromPriArray[j].settings.calendar_settings.travel_mode;
                     var eventName = settingsFromPriArray[j].settings.calendar_settings.event_name;
-                    if (eventName == allRelevantEvent[i].summary) {
+                    if (eventName == event.summary) {
                         console.log('event matched user setttings');
                         eventMatchesSettings = true;
                     } else {
                         console.log('event did not match user settings');
-                        console.log(eventName + '/=' + allRelevantEvent[i].summary);
+                        console.log(eventName + '/=' + event.summary);
                         eventMatchesSettings = false;
                     }
                 }
             }
+        
             if (eventMatchesSettings) {
-                checkIfUserShouldBeLeavingHome(allRelevantEvent[i], allRelevantEvent[i].id, travelMode, function (shouldLeave, timeToEvent) {
+                checkIfUserShouldBeLeavingHome(event, event.id, travelMode, function (shouldLeave, timeToEvent) {
                     if (shouldLeave) {
                         console.log('blink blink - You should leave for work now!');
                         communication.notificationLight(constants.PI_LOCAL_IP + '/pi/actuators/lights/1/functions/blink', 6);
@@ -97,7 +97,6 @@ var checkIfLightShouldNotifyuser = () => {
                     }
                 });
             }
-        }
     });
 }
 
@@ -132,16 +131,10 @@ var fetchCalendarEventsFromUsersThatAreHome = (callback) => {
         }
         fetchTokens(userIdArray, (tokens) => {
             for (i = 0; i < tokens.length; i++) {
-                var idToSave = tokens[i].id;
-                console.log('Id to save' + idToSave);
-                fetchCalendarEvents(tokens[i].token, (calendarEvent) => {
+                fetchCalendarEvents(tokens[i], (calendarEvent) => {
                     console.log('i have fetched the events for ' + i + ' users');
-                    calendarEvent.id = idToSave;
                     console.log(calendarEvent)
-                    calendarEvents.push(calendarEvent);
-                    if (calendarEvents.length == tokens.length) { // If we are done getting all the calendar events
-                        callback(calendarEvents, settingsFromPriArray);
-                    }
+                    callback(calendarEvent, settingsFromPriArray);
                 });
             }
         });
@@ -150,8 +143,8 @@ var fetchCalendarEventsFromUsersThatAreHome = (callback) => {
 
 var fetchCalendarEvents = (token, callback) => {
     googleHelpers.getClient(function (oauth2Client) {
-        oauth2Client.setCredentials(token);
-        googleHelpers.listCalendarEvents(oauth2Client, function (events) {
+        oauth2Client.setCredentials(token.token);
+        googleHelpers.listCalendarEvents(oauth2Client, token.id, function (events) {
             callback(events[0]); // we only want the first event, since that is the upcomming event
         });
     });

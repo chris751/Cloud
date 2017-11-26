@@ -14,8 +14,10 @@ var CALLBACK_URL = `${ENVIROMENT_URL}/auth/google/callback`;
  *
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
-exports.listCalendarEvents = function (auth, callback) {
+exports.listCalendarEvents = function (auth, id, callback) {
   var resArray = [];  
+  console.log('method called with');
+  console.log(id);
   //console.log(auth);
     var calendar = google.calendar('v3');
     calendar.events.list({
@@ -39,6 +41,7 @@ exports.listCalendarEvents = function (auth, callback) {
           var event = events[i];
           var start = event.start.dateTime || event.start.date;
           console.log('%s - %s', start, event.summary);
+          event.id = id;
           resArray.push(event);
           //console.log(resArray);
         }
