@@ -68,8 +68,7 @@ app.get('/auth/google/callback', function (req, res) {
     googleHelpers.getToken(oauth2Client, code, function (err, tokens) {
       if (!err) {
         oauth2Client.setCredentials(tokens);
-        console.log("--------------------");
-        console.log(tokens);
+
         googleHelpers.gAuth(oauth2Client, function (userInfo) {
           if (userInfo !== 'error') {
             req.session.user_id = userInfo.id;

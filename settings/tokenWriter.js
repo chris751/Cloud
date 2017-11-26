@@ -12,31 +12,20 @@ var saveAuthToFile = function (oauth2Client, id) {
   if (tokens.length > 0) { // settings file is not empty 
     for (i = tokens.length - 1; i >= 0; --i) {
       if (tokens[i].id == id) {
-        console.log('found id in tokens');
         index = i;
         exsistingToken = true; 
-
       }
     }
   }
-  if (exsistingToken) {
-    console.log('already there so im deleting it ');
-    tokens.splice(index, 1); // delete it
-    console.log('should be empty ');
-    console.log(tokens);
+  if (!exsistingToken) {
     addIt(body, tokens);
-  } else {
-    console.log('new user!!!');
-    addIt(body, tokens);
-  }
+  } 
 }
 
 
 var addIt = function (body, tokens) {
   tokens.push(body);
-  console.log(tokens);
   var uniqe = _.uniqBy(tokens, 'id');
-  console.log(uniqe);
   saveNotes(uniqe);
 }
 
@@ -64,14 +53,14 @@ var getTokenById = (id, callback) => {
         if (token[i].id == id[j]) { //we found the value
           console.log('found token from id');
           resArray.push(token[i]);
-        } else {
-          return callback('no such setting');
         }
       }
     }
     // console.log('token array');
     // console.log(resArray)
+    
     callback(resArray); //return only the tokens
+
   }
 }
 

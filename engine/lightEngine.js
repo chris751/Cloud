@@ -93,6 +93,8 @@ var turnOnLightWithUserPreferences = function () {
 // fetch settings from users that are home
 var fetchSettingsFromPriArray = function (callback) {
     settingsHelper.getSettingsFromPriArray('mac_address', priArray, (settingsFromPriArray) => {
+        console.log('callback received');
+        console.log(settingsFromPriArray);
         callback(settingsFromPriArray);
     })
 }
