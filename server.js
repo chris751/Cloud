@@ -34,7 +34,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.set('trust proxy', 1) // trust first proxy
 app.use(session({
-  secret: 'keyboard cat',
+  secret: 'keyboard catsdsdfj1123',
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -68,7 +68,8 @@ app.get('/auth/google/callback', function (req, res) {
     googleHelpers.getToken(oauth2Client, code, function (err, tokens) {
       if (!err) {
         oauth2Client.setCredentials(tokens);
-        //googleHelpers.listCalendarEvents(oauth2Client);
+        console.log("--------------------");
+        console.log(tokens);
         googleHelpers.gAuth(oauth2Client, function (userInfo) {
           if (userInfo !== 'error') {
             req.session.user_id = userInfo.id;
@@ -83,9 +84,6 @@ app.get('/auth/google/callback', function (req, res) {
     })
   });
 });
-
-
-
 
 
 app.get('/profile', function (req, res) {
@@ -125,11 +123,11 @@ app.get('/bluetoothdata', function (req, res) {
 app.post('/settings', function (request, res) {
   console.log('received new settings!');
   //console.log(request.body);
-  var user; 
-  format.formatSettings(request.body, function(formattedSettings){
+  var user;
+  format.formatSettings(request.body, function (formattedSettings) {
     user = formattedSettings;
   })
-  
+
   settingsHelper.addNote(user, function response() {
     console.log('Saved new settings');
     res.send('saved!');
@@ -155,19 +153,17 @@ app.put('/isuserhome', function (req, res) {
 //
 app.put('/sensors/light', function (req, res) {
   //console.log('test put received');
-  console.log(req.body);
   console.log(req.body.LightValue.value);
-  var light =req.body.LightValue.value
-  if(light < 300){
-  communication.adjustBrightness(constants.PI_LOCAL_IP + '/pi/actuators/lights/1/functions/adjustBrightness', 254);
-}else if (light < 800){
-  communication.adjustBrightness(constants.PI_LOCAL_IP + '/pi/actuators/lights/1/functions/adjustBrightness', 100)
-} else {
-  communication.adjustBrightness(constants.PI_LOCAL_IP + '/pi/actuators/lights/1/functions/adjustBrightness', 0)
-}
+  var light = req.body.LightValue.value
+  if (light < 300) {
+    communication.adjustBrightness(constants.PI_LOCAL_IP + '/pi/actuators/lights/1/functions/adjustBrightness', 254);
+  } else if (light < 800) {
+    communication.adjustBrightness(constants.PI_LOCAL_IP + '/pi/actuators/lights/1/functions/adjustBrightness', 100)
+  } else {
+    communication.adjustBrightness(constants.PI_LOCAL_IP + '/pi/actuators/lights/1/functions/adjustBrightness', 0)
+  }
   res.send('OK');
 });
- 
 
 app.listen(app.get('port'), function () {
   console.log('Node app is running on port', app.get('port'));

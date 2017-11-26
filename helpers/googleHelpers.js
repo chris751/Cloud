@@ -16,7 +16,7 @@ var CALLBACK_URL = `${ENVIROMENT_URL}/auth/google/callback`;
  */
 exports.listCalendarEvents = function (auth, callback) {
   resArray = [];  
-  console.log(auth);
+  //console.log(auth);
     var calendar = google.calendar('v3');
     calendar.events.list({
       auth: auth,
@@ -40,6 +40,7 @@ exports.listCalendarEvents = function (auth, callback) {
           var start = event.start.dateTime || event.start.date;
           console.log('%s - %s', start, event.summary);
           resArray.push(event);
+          //console.log(resArray);
         }
         callback(resArray);
       }
