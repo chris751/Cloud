@@ -121,7 +121,7 @@ app.get('/bluetoothdata', function (req, res) {
 //this endpoint is called from the UI when a user presses the save button
 app.post('/settings', function (request, res) {
   console.log('received new settings!');
-  //console.log(request.body);
+  console.log(request.body);
   var user;
   format.formatSettings(request.body, function (formattedSettings) {
     user = formattedSettings;

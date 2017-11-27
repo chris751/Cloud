@@ -1,8 +1,8 @@
 const request = require('request');
 
-var weather_API = 'http://api.openweathermap.org/data/2.5/weather?q=Aarhus,%20DK&appid=fd525910006e703a7afaf8b6852bf461&units=metric';
+var weather_API = 'http://api.openweathermap.org/data/2.5/weather?zip=8000,dk&appid=fd525910006e703a7afaf8b6852bf461&units=metric';
 
-var getWeather = () => {
+var getWeather = (callback) => {
   request(weather_API, function (error, response, body) {
       console.log('error:', error); // Print the error if one occurred
       console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
@@ -11,6 +11,8 @@ var getWeather = () => {
       var data = JSON.parse(body); 
       var weather = data.weather;
       console.log(weather[0].main);
+      var data = weather[0].main;
+      callback(data);
     });
 }
 

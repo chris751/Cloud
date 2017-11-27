@@ -10,8 +10,10 @@ var formatSettings = (request, callback) => {
 
     var calendar = {
         event_name: request.event_name,
-        cal_action: request.cal_action,
-        travel_mode: request.travel_mode
+        cal_action: request.cal_action_type,
+        calender_notification_color: request.calender_notification_color,
+        travel_mode: request.travel_mode,
+        weatherEnabled: request.cal_action_weather_on_off
     }
 
     var isHome = {

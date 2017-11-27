@@ -27,13 +27,15 @@
     },
     "settings": {
       "calendar_settings": {
-        "event_name": "Arbejde",
-        "cal_action": "Turn_off",
-        "travel_mode": "transit"
+        "event_name": "Work",
+        "cal_action": "blink",
+        "calender_notification_color": "#000000",
+        "travel_mode": "transit",
+        "weatherEnabled": "on"
       },
       "is_home_settings": {
-        "color": "#55d26b",
-        "brightness": "6592"
+        "color": "#e900be",
+        "brightness": "254"
       }
     }
   }

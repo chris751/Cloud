@@ -21,15 +21,37 @@
     .container {
         margin: 10px;
     }
+
+    .floating-box {
+        float: left;
+        width: 150px;
+        height: 75px;
+        margin: 10px;
+        border: 3px solid #73AD21;
+    }
+
+    #inline {
+        display: inline;
+    }
+    #space {
+        padding-top: 13px;
+    }
+
+  
 </style>
 
 <body>
     <div class="container">
+
+        
         <h1>Welcome {{name}} - {{id}}</h1>
         <hr>
-        <h3>Settings</h3>
+           <div class="row">
+            <div class="col-6" style="border-right:1px solid #dbdbdb;height:350px">
+        <h3>General settings</h3>
         <small id="emailHelp" class="form-text text-muted">General settings for home configuration</small>
-                <br>
+        <br>
+     
         <p>Bluetooth MAC address</p>
 
         <div style="display:none">
@@ -41,25 +63,47 @@
         <br>
         <p>Home Address</p>
         <input type="text" class="form-control form-control-sm" form="registerform" name="home_address" value="{{userInfo.userInfo.home_address}}">
-        <br>
-        {{!-- <p>Work Address</p>
+        <br> {{!--
+        <p>Work Address</p>
         <input type="text" class="form-control form-control-sm" form="registerform" name="work_address" value="{{userInfo.userInfo.work_address}}">
         <br> --}}
         <p>Method of Travel</p>
-          <select class="custom-select" name="travel_mode" form="registerform">
-                    <option value="{{userInfo.settings.calendar_settings.travel_mode}}">{{userInfo.settings.calendar_settings.travel_mode}}</option>
-                    <option value="driving">driving</option>
-                    <option value="bicycling">bicycling</option>
-                    <option value="walking">walking</option>
-                    <option value="transit">transit</option>
-                </select>
-                 <small id="emailHelp" class="form-text text-muted">Used to calculate the travel duration to calendar events</small>
+        <select class="custom-select" name="travel_mode" form="registerform">
+            <option value="{{userInfo.settings.calendar_settings.travel_mode}}">{{userInfo.settings.calendar_settings.travel_mode}}</option>
+            <option value="driving">driving</option>
+            <option value="bicycling">bicycling</option>
+            <option value="walking">walking</option>
+            <option value="transit">transit</option>
+        </select>
+
+         <input type="checkbox" form="registerform" name="cal_action_weather_on_off" value="on" checked>  Enable weather colors
+        </div>
+<div class="col-6" style="padding-left: 20px">
 
 
+                <h3>Home settings</h3>
+                <small id="emailHelp" class="form-text text-muted">Settings for when at home</small>
+                <br>
+
+                <input form="registerform" type="color" name="color" value="{{userInfo.settings.is_home_settings.color}}">
+                <small id="emailHelp" class="form-text text-muted">Change the color </small>
+
+                <br>
+                <input form="registerform" type="range" name="brightness" min="0" max="254" value="{{userInfo.settings.is_home_settings.brightness}}">
+
+
+                <small id="emailHelp" class="form-text text-muted">Change the brightness </small>
+                
+       </div>
+</div>
+<hr>
         <div class="row">
-            <div class="col-6" style="border-right:1px solid #989898;height:500px">
-
+            <div class="col-6" style="border-right:1px solid #dbdbdb;height:500px">
+                <div id="inline">
                 <h1>Events</h1>
+                <input type="button" class="btn btn-success" value="+" onclick="addRow()">
+            
+                </div>
 
                 <br>
                 <h3>Calendar</h3>
@@ -67,54 +111,98 @@
                 <br>
                 <form id="registerform">
                     <div class="form-group">
-                        <input type="text" name="event_name" class="form-control" aria-describedby="emailHelp" placeholder="Event name" value="{{userInfo.settings.calendar_settings.event_name}}">
-
+                        <input type="text" name="event_name" class="form-control" aria-describedby="emailHelp" placeholder="Event name" value="">
+                        
                     </div>
                     <hr>
 
-                    <br>
-                    <br>
-                    <br>
+                    <div id="content"></div> 
 
+                    {{!-- <h3>Weather</h3>
+                    <small id="emailHelp" class="form-text text-muted">Choose the weather type to add an action to</small>
+                    <br>
+                    <select class="custom-select" name="weather_event" form="registerform">
+                        <option value="{{userInfo.settings.weather_settings.weather_event}}">{{userInfo.settings.weather_settings.weather_event}}</option>
+                        <option value="clear sky">clear sky</option>
+                        <option value="few clouds">few clouds</option>
+                        <option value="shower rain">shower rain</option>
+                        <option value="rain">rain</option>
+                        <option value="thunderstorm">thunderstorm</option>
+                        <option value="snow">snow</option>
+                        <option value="mist">mist</option>
+                    </select>
+                    <hr> --}}
+
+                    <br>
+                
                     <button type="submit" class="btn btn-primary">Save</button>
                 </form>
             </div>
 
-            <div class="col-6" style="padding-left: 10px">
+            <div class="col-6" style="padding-left: 20px">
 
                 <h1>Action</h1>
+                <div id="space"></div>
                 <br>
                 <h3>Calendar</h3>
                 <small id="emailHelp" class="form-text text-muted">Choose the action for the event</small>
                 <br>
-                <select class="custom-select" name="cal_action" form="registerform">
-                    <option value="{{userInfo.settings.calendar_settings.cal_action}}">{{userInfo.settings.calendar_settings.cal_action}}</option>
-                    <option value="Dim_light">Dim_light</option>
-                    <option value="Increase_light">Increase_light</option>
-                    <option value="Turn_off">Turn_off</option>
-                </select>
-            
-                <hr>
+                <div id="inline">
+                    <select class="custom-select" name="cal_action_type" form="registerform">
+                            <option value="blink">blink</option>
+                    </select>
+                    <input form="registerform" type="color" name="calender_notification_color" value="">
 
-                <h3>When Home</h3>
-                <small id="emailHelp" class="form-text text-muted">Settings for when at home</small>
-                <br>              
-           
-                <input form="registerform" type="color" name="color" value="{{userInfo.settings.is_home_settings.color}}">
-                  <small id="emailHelp" class="form-text text-muted">Change the color </small>
-                
+                    
+                    <br>
+                </div>
+                <hr>
+                <div id="content2"></div> 
+                {{!-- <h3>Weather</h3>
+                <small id="emailHelp" class="form-text text-muted">Choose the action for the selected event</small>
                 <br>
-                <input form="registerform" type="range" name="brightness" min="0" max="40000" value="{{userInfo.settings.is_home_settings.brightness}}">
 
 
-                <small id="emailHelp" class="form-text text-muted">Change the brightness </small>
-                <hr>
+                <input form="registerform" type="color" name="weather_action_color" value="{{userInfo.settings.weather_settings.weather_action}}">
+                <small id="emailHelp" class="form-text text-muted">Change the color for when the weather is {{userInfo.settings.weather_settings.weather_event}} </small> --}}
+
+
+
             </div>
         </div>
 
     </div>
 
     <script>
+        var counter = 0; 
+        function addRow() {
+            var div = document.createElement('div');
+            var div2 = document.createElement('div');
+
+            div.className = '';
+            div2.className = '';
+
+            div.innerHTML =
+                `<input type="text" name="event_name" class="form-control" aria-describedby="emailHelp" placeholder="Event name" value=""><hr>`;
+
+            div2.innerHTML =
+                `<select class="custom-select" name="cal_action_type"  form="registerform"><option value="blink">blink</option></select><input form="registerform" type="color" name="calender_notification_color" value=""><br><hr>`;
+
+            
+            document.getElementById('content').appendChild(div);
+            document.getElementById('content2').appendChild(div2);
+            counter++;
+        }
+
+        function removeRow(input) {
+            console.log(input);
+            document.getElementById('content').removeChild(input.parentNode);
+            document.getElementById('content2').removeChild(input.parentNode);
+        }
+
+
+
+
         $(function () {
             var env_url = 'https://dd6da80a.ngrok.io';
             $("#registerform").on("submit", function (e) {
