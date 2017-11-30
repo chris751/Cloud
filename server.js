@@ -129,6 +129,7 @@ app.post('/settings', function (request, res) {
 
   settingsHelper.addNote(user, function response() {
     console.log('Saved new settings');
+    lightEngine.evaluateLightingConditions();
     res.send('saved!');
   });
 });
@@ -146,7 +147,6 @@ app.put('/isuserhome', function (req, res) {
     console.log('prioritation list = ' + prioritationList);
     res.send('OK');
   })
-  //communication.onOffLight('http://192.168.0.108/api/zwxLWe5QUN6m3R0F92GoSOdT6rvq0cPw6THRxfJA/lights/1/state',state);
 });
 
 //

@@ -1,3 +1,4 @@
+
 const request = require('request');
 var moment = require('moment');
 require("moment-duration-format");
@@ -9,8 +10,10 @@ var directions = require('./../api/directions');
 var weather = require('./../api/weather');
 var googleHelpers = require('./../helpers/googleHelpers');
 
+var priArray = [];
 
 var start = (settings) => {
+    //evaluateLightingConditions();
     checkForChanges(settings);
     //checkAll();
 }
@@ -30,12 +33,14 @@ var checkForChanges = (settings) => {
     oldAddressArray = newAddressArray;
 }
 
-var priArray = [];
-
 var prioritizeUserRights = function (macAddress, state, callback) {
+    console.log('called with');
+    console.log(macAddress);
+
     if (state == true) {
         console.log('adding user to prioritation');
         priArray.push(macAddress);
+        console.log(priArray);
     } else {
         for (i = 0; i < priArray.length; i++) {
             if (priArray[i] == macAddress) {
@@ -60,27 +65,46 @@ var evaluateLightingConditions = () => {
     }
 }
 
+//setInterval(evaluateLightingConditions, 10000);
+
 var checkIfLightShouldNotifyuser = () => {
     //turnOnLightWithUserPreferences();
     fetchCalendarEventsFromUsersThatAreHome((event, settingsFromPriArray) => {
         console.log('received callback');
         var eventMatchesSettings = false;
         var eventindex;
+        var eventJ; 
+        var currentSettings;
         for (j = 0; j < settingsFromPriArray.length; j++) {
             console.log('received callback');
             if (event.id == settingsFromPriArray[j].userInfo.profile_id) {
                 console.log('equals');
                 var travelMode = settingsFromPriArray[j].settings.calendar_settings.travel_mode;
                 for (i = 0; i < settingsFromPriArray[j].settings.calendar_settings.event_name.length; i++) {
-                    console.log('Second loop');
+                    if(typeof(settingsFromPriArray[j].settings.calendar_settings.event_name) != 'string'){
                     var eventName = settingsFromPriArray[j].settings.calendar_settings.event_name[i];
+                    currentSettings = settingsFromPriArray[j];
+                    console.log(typeof(eventName));
                     console.log(eventName);
                     console.log(event.summary);
                     if (eventName == event.summary) {
                         console.log('event matched user setttings');
                         eventindex = i;
+                        eventJ = j;
                         eventMatchesSettings = true;
                     }
+                }else {
+                    var event22 = settingsFromPriArray[j].settings.calendar_settings.event_name;
+                    currentSettings = settingsFromPriArray[j];
+                    console.log(event22);
+                    console.log(event.summary);
+                    if (event22 == event.summary) {
+                        console.log('event matched user setttings');
+                        eventindex = i;
+                        eventJ = j;
+                        eventMatchesSettings = true;
+                    }
+                }
                 }
                 if (settingsFromPriArray[j].settings.calendar_settings.weatherEnabled != undefined) {
                     var weatherEnabled = true;
@@ -88,10 +112,14 @@ var checkIfLightShouldNotifyuser = () => {
             }
         }
         if (eventMatchesSettings) {
-            checkIfUserShouldBeLeavingHome(event, event.id, travelMode, function (shouldLeave, timeToEvent) {
+            checkIfUserShouldBeLeavingHome(event, currentSettings, travelMode, function (shouldLeave, timeToEvent) {
                 if (shouldLeave) {
                     console.log('blink blink - You should leave for work now!');
-                    var colorPrefs = settingsFromPriArray[eventindex].settings.calendar_settings.calender_notification_color[eventindex];
+                    if(typeof(settingsFromPriArray[eventJ].settings.calendar_settings.calender_notification_color) != 'string'){
+                    var colorPrefs = settingsFromPriArray[eventJ].settings.calendar_settings.calender_notification_color[eventindex];
+                }else {
+                    var colorPrefs = settingsFromPriArray[eventJ].settings.calendar_settings.calender_notification_color;
+                }
                     console.log(colorPrefs);
                     toggleLight(true, colorPrefs, null, (response) => {
                         console.log('reponse is');
@@ -100,7 +128,11 @@ var checkIfLightShouldNotifyuser = () => {
                     });
 
                     if (weatherEnabled) {
-                        setTimeout(switchToweatherColor, 80000) 
+                        var callWeather = () => {
+                            switchToweatherColor(currentSettings);
+                        }
+                        setTimeout(callWeather, 8000) 
+                     
                     }
                 } else {
                     console.log('Not time to leave yet , you are due to leave in ' + timeToEvent / 60 + ' minutes');
@@ -137,10 +169,9 @@ var checkSettingsToTurnOnLight = () => {
     });
 }
 
-var switchToweatherColor = () => {
-    weather.getWeather((weather) => {
-        // console.log('got weahter data');
-        // console.log(weather);
+var switchToweatherColor = (settings) => {
+    weather.getWeather(settings, (weather) => {
+        console.log('got weahter data : ' + weather);
         if (weather == 'Rain') {
             console.log('rain');
             toggleLight(true, '#4259f4', null);
@@ -215,13 +246,15 @@ var fetchCalendarEvents = (token, callback) => {
     });
 }
 
-var checkIfUserShouldBeLeavingHome = function (event, userId, travel_mode, callback) {
+var checkIfUserShouldBeLeavingHome = function (event, settings, travel_mode, callback) {
     console.log('checking how long is takes to be using: ' + travel_mode + ' to get to ' + event.location);
     if (!event.location) {
         console.log('remember to add a location in the calendar event');
         return;
     }
-    directions.getTravelTime(travel_mode, event.location, function (travelDuration) {
+    console.log('settings');
+    console.log(settings);
+    directions.getTravelTime(travel_mode, event.location, settings.userInfo.home_address, function (travelDuration) {
         var eventStart = event.start.dateTime || event.start.date;
         var timeToEvent = compareTime(eventStart);
         travelDuration = travelDuration + 5 * 60; // give 5 minutes headroom
@@ -261,6 +294,6 @@ var compareTime = function (event) {
 
 module.exports = { 
     start,
-    prioritizeUserRights
-    // checkForBluetoothChanges
+    prioritizeUserRights,
+    evaluateLightingConditions
 };

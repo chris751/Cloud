@@ -3,18 +3,20 @@
     "userInfo": {
       "profile_name": "",
       "profile_id": "104057105667853080193",
-      "mac_address": "something",
+      "mac_address": "fdb2b61222fe",
       "home_address": "Det Store Havnehus, Grete Løchtes Gade 1, 8000 Aarhus, Aarhus C"
     },
     "settings": {
       "calendar_settings": {
-        "event_name": "testing",
-        "cal_action": "Turn_off",
-        "travel_mode": "bicycling"
+        "event_name": "work",
+        "cal_action": "blink",
+        "calender_notification_color": "#c70004",
+        "travel_mode": "bicycling",
+        "weatherEnabled": "on"
       },
       "is_home_settings": {
-        "color": "#2bcb26",
-        "brightness": "30569"
+        "color": "#c400cb",
+        "brightness": "254"
       }
     }
   },
@@ -22,20 +24,20 @@
     "userInfo": {
       "profile_name": "Christian Maigaard",
       "profile_id": "117092538965115122466",
-      "mac_address": "fdb2b61222fe",
-      "home_address": "Grete Løchtes Gade 1, 9-4, 8000, aarhus"
+      "mac_address": "f22604144c66",
+      "home_address": "Westminster, London SW1A 0AA, Storbritannien"
     },
     "settings": {
       "calendar_settings": {
-        "event_name": "Work",
+        "event_name": "work",
         "cal_action": "blink",
         "calender_notification_color": "#000000",
-        "travel_mode": "transit",
+        "travel_mode": "driving",
         "weatherEnabled": "on"
       },
       "is_home_settings": {
-        "color": "#e900be",
-        "brightness": "254"
+        "color": "#e900d5",
+        "brightness": "133"
       }
     }
   }

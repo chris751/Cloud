@@ -6,7 +6,7 @@ var OAuth2 = google.auth.OAuth2;
 
 // generate a url that asks permissions for Google+ and Google Calendar scopes
 
-var ENVIROMENT_URL = 'https://dd6da80a.ngrok.io';
+var ENVIROMENT_URL = 'https://e70975c4.ngrok.io';
 var CALLBACK_URL = `${ENVIROMENT_URL}/auth/google/callback`;
 
 /**

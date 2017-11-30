@@ -3,14 +3,15 @@ const request = require('request');
 
 var API_KEY = 'AIzaSyB7IQtJAtVXXQjxn7LqAgjDwlUCR7qkJAw';
 var GOOGLE_BASE_URL = 'https://maps.googleapis.com/maps/api/directions/json?';
-var ORIGIN = encodeURI('Grete Løchtes Gade 1, 9-4, 8000, aarhus'); //encode for URL friendliness
-var DESTINATION = encodeURI('Åbogade 34, 8200 Aarhus N, Danmark'); //encode for URL friendliness
-var TRAVEL_MODE = 'driving'; 
+var ORIGIN; //encodeURI('Grete Løchtes Gade 1, 9-4, 8000, aarhus'); //encode for URL friendliness
+var DESTINATION; // = encodeURI('Åbogade 34, 8200 Aarhus N, Danmark'); //encode for URL friendliness
+var TRAVEL_MODE; // = 'driving'; 
 //var REQUEST_URL = `${GOOGLE_BASE_URL}origin=${ORIGIN}&destination=${DESTINATION}&mode=${TRAVEL_MODE}&key=${API_KEY}`
 
 
 
-var getTravelTime = (travelMode, destination, callback) => {
+var getTravelTime = (travelMode, destination, origin, callback) => {
+  ORIGIN = encodeURI(origin);
   DESTINATION = encodeURI(destination);
   TRAVEL_MODE = travelMode;
   var REQUEST_URL = `${GOOGLE_BASE_URL}origin=${ORIGIN}&destination=${DESTINATION}&mode=${TRAVEL_MODE}&key=${API_KEY}`
