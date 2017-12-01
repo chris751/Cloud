@@ -11,13 +11,6 @@ var weather = require('./../api/weather');
 var googleHelpers = require('./../helpers/googleHelpers');
 
 var priArray = [];
-
-var start = (settings) => {
-    //evaluateLightingConditions();
-    checkForChanges(settings);
-    //checkAll();
-}
-
 var newAddressArray = [];
 var oldAddressArray = [];
 
@@ -293,7 +286,7 @@ var compareTime = function (event) {
 }
 
 module.exports = { 
-    start,
+    checkForChanges,
     prioritizeUserRights,
     evaluateLightingConditions
 };

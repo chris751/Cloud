@@ -74,28 +74,13 @@ var getSettingsFromPriArray = (attribute, value, callback) => {
   }
 }
 
-// var getRequestedSetting = (setting, callback) => {
-//   var loadedSettings = fetchNotes();
-//   console.log('called with' + setting);
-
-//   if (loadedSettings.length > 0) {
-//     for (i = loadedSettings.length - 1; i >= 0; --i) {
-//       if (setting == 'event_name') {
-//         console.log('in here');
-//         return 'loadedSettings[i].cal_event';
-//       }
-//     }
-//   }
-// }
-
-var saveNotes = (notes) => {
-  fs.writeFileSync('./settings/userSettings.json', JSON.stringify(notes, null, 2));
-  console.log(notes);
-  lightEngine.start(notes);
+var writeToDisc = (settings) => {
+  fs.writeFileSync('./settings/userSettings.json', JSON.stringify(settings, null, 2));
+  console.log(settings);
+  lightEngine.checkForChanges(settings);
 };
 
-var addNote = function (body, callback) {
-  var duplicateNotes;
+var saveSettings = function (body, callback) {
   var settings = fetchNotes();
   var isHere = false;
   var index;
@@ -130,29 +115,9 @@ var addIt = function (body, settings, callback) {
   settings.push(body);
   var uniqe = _.uniqBy(settings, 'userInfo.profile_id');
   //console.log(uniqe);
-  saveNotes(uniqe);
+  writeToDisc(uniqe);
   return callback();
 }
-
-// var addAttribute = function (macAddress, state) {
-//   var settings = fetchNotes();
-//   var didntFindAnything = true;
-//   if (settings.length > 0) { // settings file is not empty 
-//     for (i = settings.length - 1; i >= 0; --i) {
-//       if (settings[i].userInfo.mac_address == macAddress) {
-//         settingObj = settings[i];
-//         settingObj.is_home = state;
-//         // settingObj.priority = true;
-//         settings.splice(i, 1);
-//         didntFindAnything = false;
-//         addIt(settingObj, settings, function () {});
-//       }
-//     }
-//     if (didntFindAnything) {
-//       console.log("the bluetooth address in the request didnt match any of the registered MAC addresses");
-//     }
-//   }
-// }
 
 var getBluetoothData = function (callback) {
   var settings = fetchNotes();
@@ -172,7 +137,7 @@ var getBluetoothData = function (callback) {
 module.exports =   { 
   fetchNotes,
   fetchSpecificSetting,
-  addNote,
+  saveSettings,
   getBluetoothData,
   getSettingsByAttributes,
   getSettingsFromPriArray

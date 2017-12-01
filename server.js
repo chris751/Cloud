@@ -127,7 +127,7 @@ app.post('/settings', function (request, res) {
     user = formattedSettings;
   })
 
-  settingsHelper.addNote(user, function response() {
+  settingsHelper.saveSettings(user, function response() {
     console.log('Saved new settings');
     lightEngine.evaluateLightingConditions();
     res.send('saved!');
